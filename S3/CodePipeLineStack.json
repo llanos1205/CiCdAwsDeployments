@@ -1,0 +1,78 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {},
+    "Parameters": {
+        "PipeLineName": {
+            "Description": "Name for the code pipeline",
+            "Type": "String"
+        },
+        "GiHubOwner": {
+            "Description": "Repo URL",
+            "Type": "String"
+        },
+        "GiHubRepo": {
+            "Description": "Repo URL",
+            "Type": "String"
+        },
+        "GiHubBranch": {
+            "Description": "Repo URL",
+            "Type": "String"
+        },
+        "GiHubToken": {
+            "Description": "Repo URL",
+            "Type": "String"
+        }
+    },
+    "Mappings": {},
+    "Conditions": {},
+    "Resources": {
+        "codepipeline": {
+            "Type": "AWS::CodePipeline::Pipeline",
+            "Properties": {
+                "DisableInboundStageTransitions": [],
+                "Name": {
+                    "Ref": "PipeLineName"
+                },
+                "RestartExecutionOnUpdate": true,
+                "Stages": [
+                    {
+                        "Name": "Source",
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Source",
+                                    "Owner": "ThirdParty",
+                                    "Version": "1",
+                                    "Provider": "GitHub"
+                                },
+                                "Configuration": {
+                                    "Owner": {
+                                        "Ref": "GiHubOwner"
+                                    },
+                                    "Repo": {
+                                        "Ref": "GiHubRepo"
+                                    },
+                                    "Branch": {
+                                        "Ref": "GiHubBranch"
+                                    },
+                                    "OAuthToken": {
+                                        "Ref": "GiHubToken"
+                                    }
+                                },
+                                "Name": "source",
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "staticwebsite"
+                                    }
+                                ],
+                                "RunOrder": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {}
+}

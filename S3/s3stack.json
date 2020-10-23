@@ -1,0 +1,62 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates a public website hosting s3 bucket",
+    "Metadata": {},
+    "Parameters": {
+        "S3Name": {
+            "Description": "Name for the bucket, must be unique globally",
+            "Type": "String",
+            "Default": "-"
+        }
+    },
+    "Mappings": {},
+    "Conditions": {},
+    "Resources": {
+        "s3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead",
+                "BucketName": {
+                    "Ref": "S3Name"
+                },
+                "WebsiteConfiguration": {
+                    "ErrorDocument": "error.html",
+                    "IndexDocument": "index.html"
+                }
+            }
+        },
+        "s3BucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "Bucket": {
+                    "Ref": "s3Bucket"
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "PublicReadGetObject",
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "s3Bucket" } , "/*" ]]}
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "WebsiteURL": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "s3Bucket",
+                    "WebsiteURL"
+                ]
+            },
+            "Description": "URL for website hosted on S3"
+        }
+    }
+}
