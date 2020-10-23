@@ -1,0 +1,42 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {},
+    "Parameters": {},
+    "Mappings": {},
+    "Conditions": {},
+    "Resources": {
+        "Build": {
+            "Type": "AWS::CodeBuild::Project",
+            "Properties": {
+                "Artifacts": Artifacts,
+                "BadgeEnabled": Boolean,
+                "BuildBatchConfig": ProjectBuildBatchConfig,
+                "Cache": ProjectCache,
+                "Description": String,
+                "EncryptionKey": String,
+                "Environment": Environment,
+                "FileSystemLocations": [ ProjectFileSystemLocation, ...
+                ],
+                "LogsConfig": LogsConfig,
+                "Name": String,
+                "QueuedTimeoutInMinutes": Integer,
+                "SecondaryArtifacts": [ Artifacts, ...
+                ],
+                "SecondarySources": [ Source, ...
+                ],
+                "SecondarySourceVersions": [ ProjectSourceVersion, ...
+                ],
+                "ServiceRole": String,
+                "Source": Source,
+                "SourceVersion": String,
+                "Tags": [ Tag, ...
+                ],
+                "TimeoutInMinutes": Integer,
+                "Triggers": ProjectTriggers,
+                "VpcConfig": VpcConfig
+            }
+        }
+    },
+    "Outputs": {}
+}

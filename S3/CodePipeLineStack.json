@@ -27,9 +27,26 @@
     "Mappings": {},
     "Conditions": {},
     "Resources": {
-        "codepipeline": {
+        "s3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead",
+                "BucketName": "storepipe131451",
+                "VersioningConfiguration": {
+                    "Status": "Enabled"
+                }
+            }
+        },
+        "PipeLine": {
             "Type": "AWS::CodePipeline::Pipeline",
             "Properties": {
+                "ArtifactStore": {
+                    "Type": "S3",
+                    "Location": {
+                        "Ref": "s3Bucket"
+                    }
+                },
+                "RoleArn": "arn:aws:iam::863404411791:role/PipeLineRoleGeneric",
                 "DisableInboundStageTransitions": [],
                 "Name": {
                     "Ref": "PipeLineName"
@@ -58,7 +75,8 @@
                                     },
                                     "OAuthToken": {
                                         "Ref": "GiHubToken"
-                                    }
+                                    },
+                                    "PollForSourceChanges": true
                                 },
                                 "Name": "source",
                                 "OutputArtifacts": [
@@ -69,8 +87,115 @@
                                 "RunOrder": 1
                             }
                         ]
+                    },
+                    {
+                        "Name": "Build",
+                        "Actions": [
+                            {
+                                "RunOrder": 1,
+                                "Name": "Build",
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "staticwebsite"
+                                    }
+                                ],
+                                "ActionTypeId": {
+                                    "Category": "Build",
+                                    "Owner": "AWS",
+                                    "Version": "1",
+                                    "Provider": "CodeBuild"
+                                },
+                                "Configuration": {
+                                    "ProjectName": {
+                                        "Ref": "Builder"
+                                    }
+                                },
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "BuildArtifact"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Deploy",
+                        "Actions": [
+                            {
+                                "Name": "Deploy",
+                                "RunOrder": 1,
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "BuildArtifact"
+                                    }
+                                ],
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Version": "1",
+                                    "Provider": "S3"
+                                    
+                                    
+                                    
+                                },
+                                "configuration": {
+                                    "BucketName": "testweb1314",
+                                    "Extract": "true"
+                             
+                                  }
+                            }
+                        ]
                     }
                 ]
+            }
+        },
+        "Builder": {
+            "Type": "AWS::CodeBuild::Project",
+            "Properties": {
+                "Artifacts": {
+                    "Type": "CODEPIPELINE"
+                },
+                "Source": {
+                    "Type": "CODEPIPELINE"
+                },
+                "Environment": {
+                    "Type": "LINUX_CONTAINER",
+                    "ComputeType": "BUILD_GENERAL1_SMALL",
+                    "Image": "aws/codebuild/standard:4.0-20.03.13"
+                },
+                "Name": "BuildReact",
+                "Description": "uses buildspec to create a deployment.zip from bundle",
+                "ServiceRole": "arn:aws:iam::863404411791:role/BuildRoleGeneric",
+                "TimeoutInMinutes": 10
+            }
+        },
+        "Webhook": {
+            "Type": "AWS::CodePipeline::Webhook",
+            "Properties": {
+                "AuthenticationConfiguration": {
+                    "SecretToken": "68fd9699e38c3ded5c9cb1328e1688a36a69ead7"
+                },
+                "Filters": [
+                    {
+                        "JsonPath": "$.ref",
+                        "MatchEquals": "refs/heads/{Branch}"
+                    }
+                ],
+                "Authentication": "GITHUB_HMAC",
+                "TargetPipeline": {
+                    "Ref": "PipeLine"
+                },
+                "TargetAction": "Source",
+                "Name": {
+                    "Ref": "PipeLine"
+                },
+                "TargetPipelineVersion": {
+                    "Fn::GetAtt": [
+                        "PipeLine",
+                        "Version"
+                    ]
+                },
+                "RegisterWithThirdParty": "true"
             }
         }
     },
