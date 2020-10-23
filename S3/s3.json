@@ -1,0 +1,44 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    "BucketName": {
+        "Description": "-",
+        "Type": "[String|Number|CommaDelimitedList]",
+        "Default": "-"
+    }
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        
+        "s3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead",
+                "BucketName": "",
+                "CorsConfiguration": {},
+                "LifecycleConfiguration": {},
+                "NotificationConfiguration": {},
+                "VersioningConfiguration": {},
+                "WebsiteConfiguration": {
+                
+                },
+                "Tags": [] 
+            }
+        }
+        
+    },
+    "Outputs": {
+
+    }
+}
