@@ -78,7 +78,7 @@
                                     },
                                     "PollForSourceChanges": true
                                 },
-                                "Name": "source",
+                                "Name": "SourceAction",
                                 "OutputArtifacts": [
                                     {
                                         "Name": "staticwebsite"
@@ -138,7 +138,7 @@
                                     
                                     
                                 },
-                                "configuration": {
+                                "Configuration": {
                                     "BucketName": "testweb1314",
                                     "Extract": "true"
                              
@@ -173,7 +173,9 @@
             "Type": "AWS::CodePipeline::Webhook",
             "Properties": {
                 "AuthenticationConfiguration": {
-                    "SecretToken": "68fd9699e38c3ded5c9cb1328e1688a36a69ead7"
+                    "SecretToken": {
+                        "Ref": "GiHubToken"
+                    }
                 },
                 "Filters": [
                     {
@@ -185,10 +187,8 @@
                 "TargetPipeline": {
                     "Ref": "PipeLine"
                 },
-                "TargetAction": "Source",
-                "Name": {
-                    "Ref": "PipeLine"
-                },
+                "TargetAction": "SourceAction",
+                "Name": "WebHook",
                 "TargetPipelineVersion": {
                     "Fn::GetAtt": [
                         "PipeLine",
