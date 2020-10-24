@@ -5,23 +5,28 @@
     "Parameters": {
         "PipeLineName": {
             "Description": "Name for the code pipeline",
-            "Type": "String"
+            "Type": "String",
+            "Default":"testpipe"
         },
         "GiHubOwner": {
-            "Description": "Repo URL",
-            "Type": "String"
+            "Description": "Owner",
+            "Type": "String",
+            "Default":"Control-Soft"
         },
         "GiHubRepo": {
-            "Description": "Repo URL",
-            "Type": "String"
+            "Description": "Repo name",
+            "Type": "String",
+            "Default":"CerberoFront"
         },
         "GiHubBranch": {
-            "Description": "Repo URL",
-            "Type": "String"
+            "Description": "Repo branch",
+            "Type": "String",
+            "Default":"master"
         },
         "GiHubToken": {
-            "Description": "Repo URL",
-            "Type": "String"
+            "Description": "acces token for github",
+            "Type": "String",
+            "Default":"b9aa7b9f791a98c2c764219d89df36ba9f38420a"
         }
     },
     "Mappings": {},
