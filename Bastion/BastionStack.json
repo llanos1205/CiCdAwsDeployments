@@ -1,0 +1,50 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {},
+    "Parameters": {},
+    "Mappings": {},
+    "Conditions": {},
+    "Resources": {
+        "BastionALB": {
+            "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties": {
+                "Listeners": [
+                    {
+                        "InstancePort": "20",
+                        "InstanceProtocol": "TCP",
+                        "LoadBalancerPort": "20",
+                        "Protocol": "TCP"
+                    }
+                ],
+                "SecurityGroups": [],
+                "Subnets": []
+            }
+        },
+        "BastionASG" : {
+            "Type" : "AWS::AutoScaling::AutoScalingGroup",
+            "Properties" : {
+                "AvailabilityZones" : [
+                    azs
+                ],
+                "LaunchConfigurationName" : "-",
+                "MaxSize" : "-",
+                "MinSize" : "-",
+                "VPCZoneIdentifier" :  [ list of subnet ids ],
+                "Tags" : [ {"Key" : "Name",
+                            "Value" : "-",
+                            "PropagateAtLaunch" : "True"} 
+                        ]
+            }
+        },
+        "launchTemplate":{
+         "Type":"AWS::EC2::LaunchTemplate",
+            "Properties":{
+                "LaunchTemplateName" : "--",
+                "LaunchTemplateData" : "--"
+            }
+        }
+        
+    },
+    "Outputs": {}
+}
