@@ -542,13 +542,17 @@
     "EIPA": {
       "Type": "AWS::EC2::EIP",
       "Properties": {
-        "Domain": "vpc"
+        "Domain": "vpc",
+
+        "Tags": [{ "Key": "Name", "Value": "NATAEIP" }]
       }
     },
     "EIPB": {
       "Type": "AWS::EC2::EIP",
       "Properties": {
-        "Domain": "vpc"
+        "Domain": "vpc",
+
+        "Tags": [{ "Key": "Name", "Value": "NATBEIP" }]
       }
     },
     "NatGatewayA": {

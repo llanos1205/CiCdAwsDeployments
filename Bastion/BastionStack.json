@@ -5,8 +5,7 @@
   "Parameters": {
     "BastionAMIId": {
       "Description": "ami",
-      "Type": "String",
-      "Default": "ami-0dba2cb6798deb6d8"
+      "Type": "String"
     },
 
     "BastionPemKeyId": {
@@ -14,40 +13,38 @@
       "Type": "String",
       "Default": "bastionkp"
     },
-
-    "ALBSGID": {
-      "Description": "Security group for the alb",
-      "Type": "String",
-      "Default": "sg-0cd4ceec7ccaa12b1"
-    },
-
     "BastionSGId": {
       "Description": "Bastion SG Id",
-      "Type": "String",
-      "Default": "sg-0412dbc2e96e208c1"
+      "Type": "String"
     },
 
     "SubnetAId": {
       "Description": "-",
-      "Type": "String",
-      "Default": "subnet-0ee623f5e196c0dee"
+      "Type": "String"
     },
 
     "SubnetBId": {
       "Description": "-",
-      "Type": "String",
-      "Default": "subnet-0155a33b36dbc58e2"
+      "Type": "String"
     },
 
     "VPC": {
       "Description": "-",
-      "Type": "String",
-      "Default": "vpc-05ef357dae3f5d7a9"
+      "Type": "String"
     }
   },
   "Mappings": {},
   "Conditions": {},
   "Resources": {
+    "BastionEIP": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+
+        "Tags": [{ "Key": "Name", "Value": "BastionEIP" }]
+      }
+    },
+
     "BastionASG": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
@@ -75,7 +72,15 @@
           "KeyName": { "Ref": "BastionPemKeyId" },
           "NetworkInterfaces": [],
 
-          "SecurityGroupIds": [{ "Ref": "BastionSGId" }]
+          "SecurityGroupIds": [{ "Ref": "BastionSGId" }],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Sub": [
+                "#!/bin/bash\nINSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)\naws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id=${EIP}",
+                { "EIP": { "Ref": "BastionEIP" } }
+              ]
+            }
+          }
         }
       }
     }

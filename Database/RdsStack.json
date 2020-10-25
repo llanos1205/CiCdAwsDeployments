@@ -1,0 +1,76 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {
+    "DBSecurityGroup": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "sg-0c39fa0b7d9727524"
+    },
+
+    "SubnetDBA": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "subnet-0f654cb7ea5a00dfe"
+    },
+
+    "SubnetDBB": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "subnet-00c945618d2cea461"
+    },
+
+    "MasterUserPassword": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "altair1205"
+    },
+
+    "MasterUsername": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "cerbero"
+    }
+  },
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "rdsDBInstance": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "AllocatedStorage": 20,
+        "DBInstanceClass": "db.t3.micro",
+        "AllowMajorVersionUpgrade": "true",
+        "AutoMinorVersionUpgrade": "true",
+
+        "DBInstanceIdentifier": "CerberoDB",
+        "DBName": "CoreDB",
+
+        "VPCSecurityGroups": [{ "Ref": "DBSecurityGroup" }],
+        "DBSubnetGroupName": { "Ref": "rdsDBSubnetGroup" },
+        "Engine": "postgres",
+        "EngineVersion": "12.4",
+
+        "MasterUsername": { "Ref": "MasterUsername" },
+        "MasterUserPassword": { "Ref": "MasterUserPassword" },
+        "MultiAZ": true,
+
+        "Port": "5432",
+
+        "PubliclyAccessible": "false",
+
+        "StorageEncrypted": "false",
+        "StorageType": "gp2"
+      }
+    },
+    "rdsDBSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Subnet group for rds postgres Cerbero",
+        "SubnetIds": [{ "Ref": "SubnetDBA" }, { "Ref": "SubnetDBB" }]
+      }
+    }
+  },
+  "Outputs": {}
+}
