@@ -28,6 +28,26 @@
                 ]
             }
         },
+        
+        "BastionSecurityGroup" : {
+          "Type" : "AWS::EC2::SecurityGroup",
+          "Properties" : {
+            "GroupDescription" : "-",
+            "SecurityGroupIngress" : [ 
+
+            ],
+            "VpcId" :  {
+                "Ref": "VPC"
+            },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "BastionSecurityGroup"
+                }
+            ]
+          }
+        },
+        
         "ServerSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -81,7 +101,9 @@
                 "IpProtocol": "tcp",
                 "FromPort": "22",
                 "ToPort": "22",
-                "CidrIp": "0.0.0.0/0"
+                "SourceSecurityGroupId": {
+                    "Ref": "LoadBalancerSecurityGroup"
+                }
             }
         },
         "ServerInboundRule1": {
@@ -109,6 +131,34 @@
                 "ToPort": "5432",
                 "SourceSecurityGroupId": {
                     "Ref": "DataBaseSecurityGroup"
+                }
+            }
+        },
+        "ServerInboundRule3": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "ServerSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "80",
+                "ToPort": "80",
+                "SourceSecurityGroupId": {
+                    "Ref": "LoadBalancerSecurityGroup"
+                }
+            }
+        },
+        "ServerInboundRule4": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "ServerSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "443",
+                "ToPort": "443",
+                "SourceSecurityGroupId": {
+                    "Ref": "LoadBalancerSecurityGroup"
                 }
             }
         },
@@ -200,7 +250,7 @@
                 },
                 "IpProtocol": "tcp",
                 "FromPort": "22",
-                "ToPort": "2",
+                "ToPort": "22",
                 "SourceSecurityGroupId": {
                     "Ref": "BastionSecurityGroup"
                 }
@@ -239,9 +289,7 @@
                 "IpProtocol": "tcp",
                 "FromPort": "22",
                 "ToPort": "22",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
+                "CidrIp": "0.0.0.0/0"
             }
         }
     },
