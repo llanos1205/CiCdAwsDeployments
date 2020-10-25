@@ -3,103 +3,51 @@
   "Description": "",
   "Metadata": {},
   "Parameters": {
-    "BastionAMI-Id": {
+    "BastionAMIId": {
       "Description": "ami",
       "Type": "String",
-      "Default": "-"
+      "Default": "ami-0dba2cb6798deb6d8"
     },
 
-    "BastionPemKey-Id": {
+    "BastionPemKeyId": {
       "Description": "the id for ssh the bastions",
       "Type": "String",
-      "Default": "-"
+      "Default": "bastionkp"
     },
 
-    "ALB-SG-ID": {
+    "ALBSGID": {
       "Description": "Security group for the alb",
       "Type": "String",
-      "Default": "-"
+      "Default": "sg-0cd4ceec7ccaa12b1"
     },
 
-    "SubnetA-Id": {
-      "Description": "-",
+    "BastionSGId": {
+      "Description": "Bastion SG Id",
       "Type": "String",
-      "Default": "-"
+      "Default": "sg-0412dbc2e96e208c1"
     },
 
-    "SubnetB-Id": {
+    "SubnetAId": {
       "Description": "-",
       "Type": "String",
-      "Default": "-"
+      "Default": "subnet-0ee623f5e196c0dee"
+    },
+
+    "SubnetBId": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "subnet-0155a33b36dbc58e2"
     },
 
     "VPC": {
       "Description": "-",
       "Type": "String",
-      "Default": "-"
+      "Default": "vpc-05ef357dae3f5d7a9"
     }
   },
   "Mappings": {},
   "Conditions": {},
   "Resources": {
-    "BastionALB": {
-      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-      "Properties": {
-        "IpAddressType": "ipv4",
-
-        "Name": "BastionALB",
-        "Scheme": "internet-facing",
-        "SecurityGroups": [{ "Ref": "ALB-SG-ID" }],
-        "SubnetMappings": [
-          {
-            "SubnetId": { "Ref": "SubnetB-Id" }
-          },
-          {
-            "SubnetId": { "Ref": "SubnetA-Id" }
-          }
-        ],
-        "Subnets": [{ "Ref": "SubnetA-Id" }, { "Ref": "SubnetB-Id" }],
-
-        "Type": "application"
-      }
-    },
-
-    "BastionTarget": {
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-      "Properties": {
-        "HealthCheckEnabled": true,
-        "HealthCheckIntervalSeconds": 10,
-        "HealthCheckPath": "/",
-        "HealthCheckPort": "80",
-        "HealthCheckProtocol": "HTTP",
-        "HealthCheckTimeoutSeconds": 5,
-        "HealthyThresholdCount": 2,
-        "Matcher": {
-          "HttpCode": "200"
-        },
-        "Name": "BastionTarget",
-        "Port": 80,
-        "Protocol": "HTTP",
-        "TargetType": "instance",
-        "UnhealthyThresholdCount": 2,
-        "VpcId": { "Ref": "VPC" }
-      }
-    },
-    "BastionALBListener": {
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
-      "Properties": {
-        "DefaultActions": [
-          {
-            "TargetGroupArn": { "Ref": "BastionTarget" },
-            "Type": "forward"
-          }
-        ],
-        "LoadBalancerArn": { "Ref": "BastionALB" },
-        "Port": 80,
-        "Protocol": "HTTP"
-      }
-    },
-
     "BastionASG": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
@@ -109,37 +57,28 @@
         },
         "MaxSize": "1",
         "MinSize": "1",
-        "HealthCheckType" : "ELB",
-        "VPCZoneIdentifier": [{ "Ref": "SubnetA-Id" }, { "Ref": "SubnetB-Id" }],
-        "TargetGroupARNs": [{ "Ref": "BastionTarget" }]
+        "HealthCheckGracePeriod": 30,
+        "HealthCheckType": "EC2",
+        "VPCZoneIdentifier": [{ "Ref": "SubnetAId" }, { "Ref": "SubnetBId" }]
       }
     },
-    "BastionlaunchTemplate":{
-        "Type":"AWS::EC2::LaunchTemplate",
-           "Properties":{
-               "LaunchTemplateName" : "BastionDevTemplate",
-               "LaunchTemplateData" : {
-                   "ImageId" : 
-                   { "Ref": "BastionAMI-Id" }
-                   ,
-                   "InstanceInitiatedShutdownBehavior" : "terminate",
-         
-                   "InstanceType" : "t3.micro",
-                  
-                   "KeyName" : 
-                   { "Ref": "BastionPemKey-Id" }
-                   ,
-                   "NetworkInterfaces" : [ NetworkInterface, ... ],
-                   "Placement" : Placement,
-                   "RamDiskId" : String,
-                   "SecurityGroupIds" : [ String, ... ],
-                   "SecurityGroups" : [ String, ... ],
-                   "TagSpecifications" : [ TagSpecification, ... ],
-                   "UserData" : String
-                 }
-                 
-           }
-       }
+    "BastionlaunchTemplate": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateName": "BastionDevTemplate",
+        "LaunchTemplateData": {
+          "ImageId": { "Ref": "BastionAMIId" },
+          "InstanceInitiatedShutdownBehavior": "terminate",
+
+          "InstanceType": "t3.micro",
+
+          "KeyName": { "Ref": "BastionPemKeyId" },
+          "NetworkInterfaces": [],
+
+          "SecurityGroupIds": [{ "Ref": "BastionSGId" }]
+        }
+      }
+    }
   },
   "Outputs": {}
 }
