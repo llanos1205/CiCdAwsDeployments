@@ -75,7 +75,9 @@
         "LaunchTemplateData": {
           "ImageId": { "Ref": "BastionAMIId" },
           "InstanceInitiatedShutdownBehavior": "terminate",
-          "IamInstanceProfile": { "Ref": "BastioniamInstanceProfile" },
+          "IamInstanceProfile": {
+            "Arn": { "Fn::GetAtt": ["BastioniamInstanceProfile", "Arn"] }
+          },
 
           "InstanceType": "t3.micro",
 
