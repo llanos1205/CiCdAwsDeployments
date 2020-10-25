@@ -101,9 +101,7 @@
                 "IpProtocol": "tcp",
                 "FromPort": "22",
                 "ToPort": "22",
-                "SourceSecurityGroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                }
+                "CidrIp": "0.0.0.0/0"
             }
         },
         "ServerInboundRule1": {
@@ -242,20 +240,7 @@
                 }
             }
         },
-        "LBOutboundRule3": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "22",
-                "ToPort": "22",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
-            }
-        },
+        
         "LBInboundRule1": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "Properties": {
@@ -277,18 +262,6 @@
                 "IpProtocol": "tcp",
                 "FromPort": "443",
                 "ToPort": "443",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "LBInboundRule3": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "22",
-                "ToPort": "22",
                 "CidrIp": "0.0.0.0/0"
             }
         }
