@@ -1,0 +1,74 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "CerberoEbApp": {
+      "Type": "AWS::ElasticBeanstalk::Application",
+      "Properties": {
+        "ApplicationName": "CerberoEbApp",
+        "Description": "AWS Elastic Beanstalk Cerbero Application"
+      }
+    },
+
+    "CerberoEbAppVersion": {
+      "Type": "AWS::ElasticBeanstalk::ApplicationVersion",
+      "Properties": {
+        "ApplicationName": { "Ref": "CerberoEbApp" },
+        "Description": "AWS Elastic Beanstalk Cerbero Version",
+        "SourceBundle": {
+          "S3Bucket": {
+            "Fn::Join": [
+              "-",
+              ["elasticbeanstalk-samples", { "Ref": "AWS::Region" }]
+            ]
+          },
+          "S3Key": "python-newsample-app.zip"
+        }
+      }
+    },
+    "CerberoEbConfTemp": {
+      "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
+      "Properties": {
+        "ApplicationName": { "Ref": "CerberoEbApp" },
+        "Description": "AWS Elastic Beanstalk Cerbero Conf tempalte",
+
+        "OptionSettings": [
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MinSize",
+            "Value": "1"
+          },
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MaxSize",
+            "Value": "2"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:environment",
+            "OptionName": "EnvironmentType",
+            "Value": "LoadBalanced"
+          }
+        ],
+        "SolutionStackName": "cerbero-stack"
+      }
+    },
+    "CerberoEbEnv": {
+      "Type": "AWS::ElasticBeanstalk::Environment",
+      "Properties": {
+        "ApplicationName": { "Ref": "CerberoEbApp" },
+        "Description": "enviroment",
+        "EnvironmentName": "CerberoEnv",
+        "OptionSettings": [],
+        "SolutionStackName": "",
+        "TemplateName": { "Ref": "CerberoEbConfTemp" },
+        "Tier": "",
+        "VersionLabel": ""
+      }
+    }
+  },
+  "Outputs": {}
+}

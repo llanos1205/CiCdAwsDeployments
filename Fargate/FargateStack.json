@@ -14,7 +14,36 @@
 
     },
     "Resources": {
-    
+        "CerberoCluster":{
+            "Type" : "AWS::ECS::Cluster",
+            "Properties" : {
+               
+                "ClusterName" : "CerberoCluster",
+              
+              }
+          },
+        "CerberoTaskDef":{
+            "Type" : "AWS::ECS::TaskDefinition",
+            "Properties" : {
+                "ContainerDefinitions" : [ ContainerDefinition, ... ],
+                "Cpu" : String,
+                "ExecutionRoleArn" : String,
+                "Family" : String,
+                "InferenceAccelerators" : [ InferenceAccelerator, ... ],
+                "IpcMode" : String,
+                "Memory" : String,
+                "NetworkMode" : String,
+                "PidMode" : String,
+                "PlacementConstraints" : [ TaskDefinitionPlacementConstraint, ... ],
+                "ProxyConfiguration" : ProxyConfiguration,
+                "RequiresCompatibilities" : [ String, ... ],
+                "Tags" : [ Tag, ... ],
+                "TaskRoleArn" : String,
+                "Volumes" : [ Volume, ... ]
+              }
+          }
+          
+          
     },
     "Outputs": {
 
