@@ -6,6 +6,19 @@
     },
     "Parameters": {
     
+    "TaskRoleArn": {
+        "Description": "arn of task role",
+        "Type": "String",
+        "Default": "-"
+    },
+    
+    "ExecutionRoleArn": {
+        "Description": "arn execution role",
+        "Type": "String",
+        "Default": "-"
+    }
+    
+    
     },
     "Mappings": {
 
@@ -18,30 +31,104 @@
             "Type" : "AWS::ECS::Cluster",
             "Properties" : {
                
-                "ClusterName" : "CerberoCluster",
+                "ClusterName" : "CerberoCluster"
               
               }
           },
         "CerberoTaskDef":{
             "Type" : "AWS::ECS::TaskDefinition",
             "Properties" : {
-                "ContainerDefinitions" : [ ContainerDefinition, ... ],
-                "Cpu" : String,
-                "ExecutionRoleArn" : String,
-                "Family" : String,
-                "InferenceAccelerators" : [ InferenceAccelerator, ... ],
-                "IpcMode" : String,
-                "Memory" : String,
-                "NetworkMode" : String,
-                "PidMode" : String,
-                "PlacementConstraints" : [ TaskDefinitionPlacementConstraint, ... ],
-                "ProxyConfiguration" : ProxyConfiguration,
-                "RequiresCompatibilities" : [ String, ... ],
+                "ContainerDefinitions" : [ {
+                    "Command" : [ String, ... ],
+                    "Cpu" : Integer,
+                    "DependsOn" : [ ContainerDependency, ... ],
+                    "DisableNetworking" : false,
+                    "DnsSearchDomains" : [ String, ... ],
+                    "DnsServers" : [ String, ... ],
+                    "DockerLabels" : {Key : Value, ...},
+                    "DockerSecurityOptions" : [ String, ... ],
+                    "EntryPoint" : [ String, ... ],
+                    "Environment" : [ KeyValuePair, ... ],
+                    "EnvironmentFiles" : [ EnvironmentFile, ... ],
+                    "Essential" : Boolean,
+                    "ExtraHosts" : [ HostEntry, ... ],
+                    "FirelensConfiguration" : FirelensConfiguration,
+                    "HealthCheck" : HealthCheck,
+                    "Hostname" : String,
+                    "Image" : String,
+                    "Interactive" : Boolean,
+                    "Links" : [ String, ... ],
+                    "LinuxParameters" : LinuxParameters,
+                    "LogConfiguration" : LogConfiguration,
+                    "Memory" : Integer,
+                    "MemoryReservation" : Integer,
+                    "MountPoints" : [ MountPoint, ... ],
+                    "Name" : String,
+                    "PortMappings" : [ PortMapping, ... ],
+                    "Privileged" : Boolean,
+                    "PseudoTerminal" : Boolean,
+                    "ReadonlyRootFilesystem" : Boolean,
+                    "RepositoryCredentials" : RepositoryCredentials,
+                    "ResourceRequirements" : [ ResourceRequirement, ... ],
+                    "Secrets" : [ Secret, ... ],
+                    "StartTimeout" : Integer,
+                    "StopTimeout" : Integer,
+                    "SystemControls" : [ SystemControl, ... ],
+                    "Ulimits" : [ Ulimit, ... ],
+                    "User" : String,
+                    "VolumesFrom" : [ VolumeFrom, ... ],
+                    "WorkingDirectory" : String
+                  }
+                   ],
+                "Cpu" : "256",
+                "ExecutionRoleArn" : 
+                { "Ref": "ExecutionRoleArn" }
+                ,
+          
+                   "TaskRoleArn":
+                   { "Ref": "TaskRoleArn" },
+                   
+           
+                "Memory" : "0.5GB",
+                "NetworkMode" : "awsvpc",
+              
+             
+
+                "RequiresCompatibilities" : [ "FARGATE" ]
+              }
+          },
+          "Service":{
+            "Type" : "AWS::ECS::Service",
+            "Properties" : {
+                "CapacityProviderStrategy" : [ CapacityProviderStrategyItem, ... ],
+                "Cluster" : 
+                { "Ref": "Cluster" }
+                ,
+                "DeploymentConfiguration" : DeploymentConfiguration,
+                "DeploymentController" : DeploymentController,
+                "DesiredCount" : 1,
+                "EnableECSManagedTags" : Boolean,
+                "HealthCheckGracePeriodSeconds" : 30,
+                "LaunchType" : "FARGATE",
+                "LoadBalancers" : [ LoadBalancer, ... ],
+                "NetworkConfiguration" : NetworkConfiguration,
+                "PlacementConstraints" : [ PlacementConstraint, ... ],
+                "PlacementStrategies" : [ PlacementStrategy, ... ],
+                "PlatformVersion" : String,
+                "PropagateTags" : String,
+                "Role" : String,
+                "SchedulingStrategy" : String,
+                "ServiceArn" : String,
+                "ServiceName" : String,
+                "ServiceRegistries" : [ ServiceRegistry, ... ],
                 "Tags" : [ Tag, ... ],
-                "TaskRoleArn" : String,
-                "Volumes" : [ Volume, ... ]
+                "TaskDefinition" : 
+                { "Ref": "CerberoTaskDef" }
+                
               }
           }
+          
+          
           
           
     },
