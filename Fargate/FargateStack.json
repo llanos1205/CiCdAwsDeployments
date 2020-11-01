@@ -4,27 +4,7 @@
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
-                {
-                    "Label": {
-                        "default": "Network Configuration"
-                    },
-                    "Parameters": [
-                        "VPC",
-                        "SubnetAP",
-                        "SubnetBP",
-                        "SubnetA",
-                        "SubnetB"
-                    ]
-                },
-                {
-                    "Label": {
-                        "default": "Security Configuration"
-                    },
-                    "Parameters": [
-                        "ServerSG",
-                        "LoadBalancerSG"
-                    ]
-                },
+                
                 {
                     "Label": {
                         "default": "Docker config"
@@ -50,41 +30,6 @@
             "Description": "-",
             "Type": "Number",
             "Default": 8800
-        },
-        "VPC": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "vpc-0943d6f041759b7b9"
-        },
-        "SubnetAP": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "subnet-063e7c3060ad69bd2"
-        },
-        "SubnetBP": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "subnet-0cfe0d960041a07b8"
-        },
-        "SubnetA": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "subnet-0e80a5b579d5c70cc"
-        },
-        "SubnetB": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "subnet-029ecc17893386889"
-        },
-        "ServerSG": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "sg-036dcff6d314a539f"
-        },
-        "LoadBalancerSG": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "sg-0aa25ee1cc2ee70c5"
         },
         "DBHOST": {
             "Description": "-",
@@ -135,9 +80,9 @@
                         },
                         "PortMappings": [
                             {
-                                "ContainerPort": 
-                                { "Ref": "ImagePort" }
-                                
+                                "ContainerPort": {
+                                    "Ref": "ImagePort"
+                                }
                             }
                         ],
                         "LogConfiguration": {
@@ -153,21 +98,21 @@
                         "Environment": [
                             {
                                 "Name": "DB_HOST",
-                                "Value": 
-                                { "Ref": "DBHOST" }
-                                
+                                "Value": {
+                                    "Ref": "DBHOST"
+                                }
                             },
                             {
                                 "Name": "DB_PASSWORD",
-                                "Value": 
-                                { "Ref": "DBPASSWORD" }
-                                
+                                "Value": {
+                                    "Ref": "DBPASSWORD"
+                                }
                             },
                             {
                                 "Name": "DB_USER",
-                                "Value": 
-                                { "Ref": "DBUSER" }
-                                
+                                "Value": {
+                                    "Ref": "DBUSER"
+                                }
                             }
                         ]
                     }
@@ -247,15 +192,15 @@
                         "AssignPublicIp": "DISABLED",
                         "Subnets": [
                             {
-                                "Ref": "SubnetAP"
+                                "Fn::ImportValue": "PrivateA"
                             },
                             {
-                                "Ref": "SubnetBP"
+                                "Fn::ImportValue": "PrivateB"
                             }
                         ],
                         "SecurityGroups": [
                             {
-                                "Ref": "ServerSG"
+                                "Fn::ImportValue": "ServerSG"
                             }
                         ]
                     }
@@ -263,9 +208,9 @@
                 "LoadBalancers": [
                     {
                         "ContainerName": "CerberoContainer",
-                        "ContainerPort": 
-                        { "Ref": "ImagePort" }
-                        ,
+                        "ContainerPort": {
+                            "Ref": "ImagePort"
+                        },
                         "TargetGroupArn": {
                             "Ref": "CerberoTargetGroup"
                         }
@@ -282,11 +227,13 @@
                 "HealthyThresholdCount": 2,
                 "UnhealthyThresholdCount": 2,
                 "Name": "CerberoTargetGroup",
-                "Port": 8080,
+                "Port": {
+                    "Ref": "ImagePort"
+                },
                 "Protocol": "HTTP",
                 "TargetType": "ip",
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Fn::ImportValue": "VPCID"
                 }
             }
         },
@@ -315,15 +262,15 @@
                 "Scheme": "internet-facing",
                 "SecurityGroups": [
                     {
-                        "Ref": "LoadBalancerSG"
+                        "Fn::ImportValue": "LoadBalancerSG"
                     }
                 ],
                 "Subnets": [
                     {
-                        "Ref": "SubnetA"
+                        "Fn::ImportValue": "Public2A"
                     },
                     {
-                        "Ref": "SubnetB"
+                        "Fn::ImportValue": "Public2B"
                     }
                 ]
             }
