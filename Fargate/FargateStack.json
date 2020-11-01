@@ -21,7 +21,7 @@
         "SubnetBP": {
             "Description": "-",
             "Type": "String",
-            "Default": "vpc-0943d6f041759b7b9"
+            "Default": "subnet-0cfe0d960041a07b8"
         },
         "SubnetA": {
             "Description": "-",
@@ -83,7 +83,7 @@
                         "LogConfiguration": {
                             "LogDriver": "awslogs",
                             "Options": {
-                                "awslogs-region": "us-eas-1",
+                                "awslogs-region": "us-east-1",
                                 "awslogs-group": {
                                     "Ref": "LogGroup"
                                 },
@@ -165,7 +165,8 @@
                     "MinimumHealthyPercent": 100,
                     "MaximumPercent": 200
                 },
-                "HealthCheckGracePeriodSeconds": 30,
+                "DesiredCount": 1,
+                "HealthCheckGracePeriodSeconds": 40,
                 "LaunchType": "FARGATE",
                 "NetworkConfiguration": {
                     "AwsvpcConfiguration": {
@@ -183,16 +184,17 @@
                                 "Ref": "ServerSG"
                             }
                         ]
-                    },
-                    "LoadBalancers": {
+                    }
+                },
+                "LoadBalancers": [
+                    {
                         "ContainerName": "CerberoContainer",
                         "ContainerPort": 8080,
                         "TargetGroupArn": {
                             "Ref": "CerberoTargetGroup"
                         }
-                    },
-                    "DesiredCount": 1
-                }
+                    }
+                ]
             }
         },
         "CerberoTargetGroup": {
