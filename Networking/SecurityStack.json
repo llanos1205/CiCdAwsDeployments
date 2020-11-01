@@ -1,7 +1,20 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "",
-    "Metadata": {},
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Network Configuration"
+                    },
+                    "Parameters": [
+                        "VPC"
+                    ]
+                }
+            ]
+        }
+    },
     "Parameters": {
         "VPC": {
             "Description": "VPC Id",
@@ -28,26 +41,22 @@
                 ]
             }
         },
-        
-        "BastionSecurityGroup" : {
-          "Type" : "AWS::EC2::SecurityGroup",
-          "Properties" : {
-            "GroupDescription" : "-",
-            "SecurityGroupIngress" : [ 
-
-            ],
-            "VpcId" :  {
-                "Ref": "VPC"
-            },
-            "Tags": [
-                {
-                    "Key": "Name",
-                    "Value": "BastionSecurityGroup"
-                }
-            ]
-          }
+        "BastionSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "-",
+                "SecurityGroupIngress": [],
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "BastionSecurityGroup"
+                    }
+                ]
+            }
         },
-        
         "ServerSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -240,7 +249,6 @@
                 }
             }
         },
-        
         "LBInboundRule1": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "Properties": {
@@ -266,5 +274,26 @@
             }
         }
     },
-    "Outputs": {}
+    "Outputs": {
+        "DataBaseSecurityGroup": {
+            "Value": {
+                "Ref": "DataBaseSecurityGroup"
+            }
+        },
+        "ServerSecurityGroup": {
+            "Value": {
+                "Ref": "ServerSecurityGroup"
+            }
+        },
+        "BastionSecurityGroup": {
+            "Value": {
+                "Ref": "BastionSecurityGroup"
+            }
+        },
+        "LoadBalancerSecurityGroup": {
+            "Value": {
+                "Ref": "LoadBalancerSecurityGroup"
+            }
+        }
+    }
 }

@@ -1,36 +1,64 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "",
-  "Metadata": {},
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Network Configuration"
+          },
+          "Parameters": [
+            "VPC",
+            "SubnetDBA",
+            "SubnetDBB"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Security Configuration"
+          },
+          "Parameters": [
+            "DBSecurityGroup"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Database Configuration"
+          },
+          "Parameters": [
+            "MasterUserPassword",
+            "MasterUsername"
+          ]
+        }
+      ]
+    }
+  },
   "Parameters": {
     "DBSecurityGroup": {
       "Description": "-",
       "Type": "String",
-      "Default": "sg-0c39fa0b7d9727524"
+      "Default": "-"
     },
-
     "SubnetDBA": {
       "Description": "-",
       "Type": "String",
-      "Default": "subnet-0f654cb7ea5a00dfe"
+      "Default": "-"
     },
-
     "SubnetDBB": {
       "Description": "-",
       "Type": "String",
-      "Default": "subnet-00c945618d2cea461"
+      "Default": "-"
     },
-
     "MasterUserPassword": {
       "Description": "-",
       "Type": "String",
-      "Default": "altair1205"
+      "Default": "-"
     },
-
     "MasterUsername": {
       "Description": "-",
       "Type": "String",
-      "Default": "cerbero"
+      "Default": "-"
     }
   },
   "Mappings": {},
@@ -43,24 +71,28 @@
         "DBInstanceClass": "db.t3.micro",
         "AllowMajorVersionUpgrade": "true",
         "AutoMinorVersionUpgrade": "true",
-
         "DBInstanceIdentifier": "CerberoDB",
         "DBName": "CoreDB",
-
-        "VPCSecurityGroups": [{ "Ref": "DBSecurityGroup" }],
-        "DBSubnetGroupName": { "Ref": "rdsDBSubnetGroup" },
+        "VPCSecurityGroups": [
+          {
+            "Ref": "DBSecurityGroup"
+          }
+        ],
+        "DBSubnetGroupName": {
+          "Ref": "rdsDBSubnetGroup"
+        },
         "Engine": "postgres",
         "EngineVersion": "12.4",
-
-        "MasterUsername": { "Ref": "MasterUsername" },
-        "MasterUserPassword": { "Ref": "MasterUserPassword" },
+        "MasterUsername": {
+          "Ref": "MasterUsername"
+        },
+        "MasterUserPassword": {
+          "Ref": "MasterUserPassword"
+        },
         "MultiAZ": true,
-
         "Port": "5432",
-
-        "PubliclyAccessible": "false",
-
-        "StorageEncrypted": "false",
+        "PubliclyAccessible": false,
+        "StorageEncrypted": false,
         "StorageType": "gp2"
       }
     },
@@ -68,9 +100,36 @@
       "Type": "AWS::RDS::DBSubnetGroup",
       "Properties": {
         "DBSubnetGroupDescription": "Subnet group for rds postgres Cerbero",
-        "SubnetIds": [{ "Ref": "SubnetDBA" }, { "Ref": "SubnetDBB" }]
+        "SubnetIds": [
+          {
+            "Ref": "SubnetDBA"
+          },
+          {
+            "Ref": "SubnetDBB"
+          }
+        ]
       }
     }
   },
-  "Outputs": {}
+  "Outputs": {
+    
+    "rdsDBSubnetGroup" : {
+      "Value" : 
+      { "Ref": "rdsDBSubnetGroup" }
+      
+    },
+    "rdsDBInstance" : {
+      "Value" : 
+      { "Ref": "rdsDBInstance" }
+      
+    },
+    "rdsendpoint" : {
+      "Value" : 
+      { "Fn::GetAtt" : [ "rdsDBInstance", "Endpoint.Address" ]}
+      
+      
+    }
+    
+    
+  }
 }

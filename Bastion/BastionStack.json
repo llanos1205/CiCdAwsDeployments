@@ -1,14 +1,45 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "",
-  "Metadata": {},
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Network Configuration"
+          },
+          "Parameters": [
+            "VPC",
+            "SubnetAId",
+            "SubnetBId"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Security Configuration"
+          },
+          "Parameters": [
+            "BastionSGId"
+          ]
+        },
+        {
+          "Label": {
+            "default": "EC2 config"
+          },
+          "Parameters": [
+            "BastionAMIId",
+            "BastionPemKeyId"
+          ]
+        }
+      ]
+    }
+  },
   "Parameters": {
     "BastionAMIId": {
       "Description": "ami",
       "Type": "String",
-      "Default":"ami-0947d2ba12ee1ff75"
+      "Default": "ami-0947d2ba12ee1ff75"
     },
-
     "BastionPemKeyId": {
       "Description": "the id for ssh the bastions",
       "Type": "String",
@@ -18,17 +49,14 @@
       "Description": "Bastion SG Id",
       "Type": "String"
     },
-
     "SubnetAId": {
       "Description": "-",
       "Type": "String"
     },
-
     "SubnetBId": {
       "Description": "-",
       "Type": "String"
     },
-
     "VPC": {
       "Description": "-",
       "Type": "String"
@@ -41,51 +69,73 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-
-        "Tags": [{ "Key": "Name", "Value": "BastionEIP" }]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BastionEIP"
+          }
+        ]
       }
     },
-
     "BastionASG": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
         "LaunchTemplate": {
-          "LaunchTemplateId": { "Ref": "BastionlaunchTemplate" },
+          "LaunchTemplateId": {
+            "Ref": "BastionlaunchTemplate"
+          },
           "Version": 1
         },
         "MaxSize": "1",
         "MinSize": "1",
         "HealthCheckGracePeriod": 30,
         "HealthCheckType": "EC2",
-        "VPCZoneIdentifier": [{ "Ref": "SubnetAId" }, { "Ref": "SubnetBId" }]
+        "VPCZoneIdentifier": [
+          {
+            "Ref": "SubnetAId"
+          },
+          {
+            "Ref": "SubnetBId"
+          }
+        ]
       }
     },
-
     "BastioniamInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "Path": "/",
-        "Roles": ["BastionRole"]
+        "Roles": [
+          "BastionRole"
+        ]
       }
     },
-
     "BastionlaunchTemplate": {
       "Type": "AWS::EC2::LaunchTemplate",
       "Properties": {
         "LaunchTemplateName": "BastionDevTemplate",
         "LaunchTemplateData": {
-          "ImageId": { "Ref": "BastionAMIId" },
+          "ImageId": {
+            "Ref": "BastionAMIId"
+          },
           "InstanceInitiatedShutdownBehavior": "terminate",
           "IamInstanceProfile": {
-            "Arn": { "Fn::GetAtt": ["BastioniamInstanceProfile", "Arn"] }
+            "Arn": {
+              "Fn::GetAtt": [
+                "BastioniamInstanceProfile",
+                "Arn"
+              ]
+            }
           },
-
           "InstanceType": "t3.micro",
-
-          "KeyName": { "Ref": "BastionPemKeyId" },
+          "KeyName": {
+            "Ref": "BastionPemKeyId"
+          },
           "NetworkInterfaces": [],
-
-          "SecurityGroupIds": [{ "Ref": "BastionSGId" }],
+          "SecurityGroupIds": [
+            {
+              "Ref": "BastionSGId"
+            }
+          ],
           "UserData": {
             "Fn::Base64": {
               "Fn::Join": [
@@ -98,7 +148,12 @@
                     "Fn::Sub": [
                       "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id=${EIP} --allow-reassociation",
                       {
-                        "EIP": { "Fn::GetAtt": ["BastionEIP", "AllocationId"] }
+                        "EIP": {
+                          "Fn::GetAtt": [
+                            "BastionEIP",
+                            "AllocationId"
+                          ]
+                        }
                       }
                     ]
                   }
@@ -110,5 +165,21 @@
       }
     }
   },
-  "Outputs": {}
+  "Outputs": {
+    "EIP": {
+      "Value": {
+        "Ref": "BastionEIP"
+      }
+    },
+    "ASG": {
+      "Value": {
+        "Ref": "BastionASG"
+      }
+    },
+    "Template": {
+      "Value": {
+        "Ref": "BastionlaunchTemplate"
+      }
+    }
+  }
 }

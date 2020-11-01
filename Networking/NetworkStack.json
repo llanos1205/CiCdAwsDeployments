@@ -46,7 +46,11 @@
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "VPC", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "VPC",
+            "CIDR"
+          ]
         },
         "EnableDnsHostnames": "true",
         "EnableDnsSupport": "true",
@@ -76,7 +80,11 @@
         },
         "MapPublicIpOnLaunch": "true",
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PublicSubnetA", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicSubnetA",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -112,7 +120,11 @@
         },
         "MapPublicIpOnLaunch": "true",
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PublicSubnetB", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicSubnetB",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -148,7 +160,11 @@
         },
         "MapPublicIpOnLaunch": "true",
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PublicSubnet2A", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicSubnet2A",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -184,7 +200,11 @@
         },
         "MapPublicIpOnLaunch": "true",
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PublicSubnet2B", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicSubnet2B",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -219,7 +239,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PrivateSubnetA", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateSubnetA",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -254,7 +278,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PrivateSubnetB", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateSubnetB",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -289,7 +317,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PrivateSubnet2A", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateSubnet2A",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -324,7 +356,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "PrivateSubnet2B", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateSubnet2B",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -359,7 +395,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "DBPrivateSubentA", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "DBPrivateSubentA",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -394,7 +434,11 @@
           "Ref": "VPC"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["SubnetConfig", "DBPrivateSubentB", "CIDR"]
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "DBPrivateSubentB",
+            "CIDR"
+          ]
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -543,16 +587,24 @@
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-
-        "Tags": [{ "Key": "Name", "Value": "NATAEIP" }]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NATAEIP"
+          }
+        ]
       }
     },
     "EIPB": {
       "Type": "AWS::EC2::EIP",
       "Properties": {
         "Domain": "vpc",
-
-        "Tags": [{ "Key": "Name", "Value": "NATBEIP" }]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NATBEIP"
+          }
+        ]
       }
     },
     "NatGatewayA": {
@@ -560,7 +612,10 @@
       "DependsOn": "EIPA",
       "Properties": {
         "AllocationId": {
-          "Fn::GetAtt": ["EIPA", "AllocationId"]
+          "Fn::GetAtt": [
+            "EIPA",
+            "AllocationId"
+          ]
         },
         "SubnetId": {
           "Ref": "PublicA"
@@ -578,7 +633,10 @@
       "DependsOn": "EIPB",
       "Properties": {
         "AllocationId": {
-          "Fn::GetAtt": ["EIPB", "AllocationId"]
+          "Fn::GetAtt": [
+            "EIPB",
+            "AllocationId"
+          ]
         },
         "SubnetId": {
           "Ref": "PublicB"
@@ -739,9 +797,79 @@
     }
   },
   "Outputs": {
-    "VPCid": {
+    "VPC": {
       "Value": {
         "Ref": "VPC"
+      }
+    },
+    "PublicA": {
+      "Value": {
+        "Ref": "PublicA"
+      }
+    },
+    "PublicB": {
+      "Value": {
+        "Ref": "PublicB"
+      }
+    },
+    "Public2A": {
+      "Value": {
+        "Ref": "Public2A"
+      }
+    },
+    "Public2B": {
+      "Value": {
+        "Ref": "Public2B"
+      }
+    },
+    "PrivateA": {
+      "Value": {
+        "Ref": "PrivateA"
+      }
+    },
+    "PrivateB": {
+      "Value": {
+        "Ref": "PrivateB"
+      }
+    },
+    "Private2A": {
+      "Value": {
+        "Ref": "Private2A"
+      }
+    },
+    "Private2B": {
+      "Value": {
+        "Ref": "Private2B"
+      }
+    },
+    "DBA": {
+      "Value": {
+        "Ref": "DBA"
+      }
+    },
+    "DBB": {
+      "Value": {
+        "Ref": "DBB"
+      }
+    },
+    "EIPA": {
+      "Value": {
+        "Ref": "EIPA"
+      }
+    },
+    "EIPB": {
+      "Value": {
+        "Ref": "EIPB"
+      }
+    },
+    "NatGatewayA": {
+      "Value": {
+        "Ref": "NatGatewayA"
+      }
+    },
+    "NatGatewayB": {
+      "Value": {
+        "Ref": "NatGatewayB"
       }
     }
   }
