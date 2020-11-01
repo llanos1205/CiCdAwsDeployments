@@ -4,7 +4,6 @@
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
-                
                 {
                     "Label": {
                         "default": "Docker config"
@@ -34,17 +33,17 @@
         "DBHOST": {
             "Description": "-",
             "Type": "String",
-            "Default": "cerberodb.c3jfpfdq7n65.us-east-1.rds.amazonaws.com"
+            "Default": "-"
         },
         "DBPASSWORD": {
             "Description": "-",
             "Type": "String",
-            "Default": "llanos1205"
+            "Default": "test1205"
         },
         "DBUSER": {
             "Description": "-",
             "Type": "String",
-            "Default": "cerbero"
+            "Default": "postgres"
         }
     },
     "Mappings": {},
@@ -227,9 +226,9 @@
                 "HealthyThresholdCount": 2,
                 "UnhealthyThresholdCount": 2,
                 "Name": "CerberoTargetGroup",
-                "Port": {
-                    "Ref": "ImagePort"
-                },
+                "Port": 
+                { "Ref": "ImagePort" }
+                ,
                 "Protocol": "HTTP",
                 "TargetType": "ip",
                 "VpcId": {

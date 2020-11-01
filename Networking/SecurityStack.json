@@ -143,8 +143,8 @@
                     "Ref": "ServerSecurityGroup"
                 },
                 "IpProtocol": "tcp",
-                "FromPort": "80",
-                "ToPort": "80",
+                "FromPort": "1",
+                "ToPort": "65535",
                 "SourceSecurityGroupId": {
                     "Ref": "LoadBalancerSecurityGroup"
                 }
@@ -237,22 +237,8 @@
                     "Ref": "LoadBalancerSecurityGroup"
                 },
                 "IpProtocol": "tcp",
-                "FromPort": "80",
-                "ToPort": "80",
-                "SourceSecurityGroupId": {
-                    "Ref": "ServerSecurityGroup"
-                }
-            }
-        },
-        "LBOutboundRule2": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "443",
-                "ToPort": "443",
+                "FromPort": "0",
+                "ToPort": "65535",
                 "SourceSecurityGroupId": {
                     "Ref": "ServerSecurityGroup"
                 }
