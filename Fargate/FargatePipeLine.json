@@ -27,16 +27,25 @@
             "Description": "acces token for github",
             "Type": "String",
             "Default":""
+        },
+        
+        "ArtifactBucketName": {
+            "Description": "-",
+            "Type": "String",
+            "Default": "-"
         }
+        
     },
     "Mappings": {},
     "Conditions": {},
     "Resources": {
-        "s3Bucket": {
+        "ArtifactBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
                 "AccessControl": "PublicRead",
-                "BucketName": "storepipe131451",
+                "BucketName": 
+                { "Ref": "ArtifactBucketName" }
+                ,
                 "VersioningConfiguration": {
                     "Status": "Enabled"
                 }
@@ -48,7 +57,7 @@
                 "ArtifactStore": {
                     "Type": "S3",
                     "Location": {
-                        "Ref": "s3Bucket"
+                        "Ref": "ArtifactBucket"
                     }
                 },
                 "RoleArn": "arn:aws:iam::863404411791:role/PipeLineRoleGeneric",
@@ -86,7 +95,7 @@
                                 "Name": "SourceAction",
                                 "OutputArtifacts": [
                                     {
-                                        "Name": "staticwebsite"
+                                        "Name": "SourceArtifact"
                                     }
                                 ],
                                 "RunOrder": 1
@@ -101,7 +110,7 @@
                                 "Name": "Build",
                                 "InputArtifacts": [
                                     {
-                                        "Name": "staticwebsite"
+                                        "Name": "SourceArtifact"
                                     }
                                 ],
                                 "ActionTypeId": {
@@ -138,14 +147,22 @@
                                     "Category": "Deploy",
                                     "Owner": "AWS",
                                     "Version": "1",
-                                    "Provider": "S3"
+                                    "Provider": "ECS"
                                     
                                     
                                     
                                 },
                                 "Configuration": {
-                                    "BucketName": "testweb1314",
-                                    "Extract": "true"
+                                    "ClusterName": 
+                                    { "Ref": "logicalName" }
+                                    ,
+                                    "ServiceName": 
+                                    { "Ref": "logicalName" }
+                                    ,
+                                    "FileName":
+                                    { "Ref": "logicalName" }
+                                    ,
+                                    "DeploymentTimeout":"15"
                              
                                   }
                             }
@@ -168,8 +185,8 @@
                     "ComputeType": "BUILD_GENERAL1_SMALL",
                     "Image": "aws/codebuild/standard:4.0-20.03.13"
                 },
-                "Name": "BuildReact",
-                "Description": "uses buildspec to create a deployment.zip from bundle",
+                "Name": "BuildDjango",
+                "Description": "uses buildspec to create a docker image to push to docker hub",
                 "ServiceRole": "arn:aws:iam::863404411791:role/BuildRoleGeneric",
                 "TimeoutInMinutes": 10
             }
