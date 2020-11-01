@@ -4,24 +4,7 @@
   "Metadata": {
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
-        {
-          "Label": {
-            "default": "Network Configuration"
-          },
-          "Parameters": [
-            "VPC",
-            "SubnetDBA",
-            "SubnetDBB"
-          ]
-        },
-        {
-          "Label": {
-            "default": "Security Configuration"
-          },
-          "Parameters": [
-            "DBSecurityGroup"
-          ]
-        },
+        
         {
           "Label": {
             "default": "Database Configuration"
@@ -35,21 +18,7 @@
     }
   },
   "Parameters": {
-    "DBSecurityGroup": {
-      "Description": "-",
-      "Type": "String",
-      "Default": "-"
-    },
-    "SubnetDBA": {
-      "Description": "-",
-      "Type": "String",
-      "Default": "-"
-    },
-    "SubnetDBB": {
-      "Description": "-",
-      "Type": "String",
-      "Default": "-"
-    },
+   
     "MasterUserPassword": {
       "Description": "-",
       "Type": "String",
@@ -75,7 +44,7 @@
         "DBName": "CoreDB",
         "VPCSecurityGroups": [
           {
-            "Ref": "DBSecurityGroup"
+            "Fn::ImportValue": "DataBaseSG"
           }
         ],
         "DBSubnetGroupName": {
@@ -102,10 +71,10 @@
         "DBSubnetGroupDescription": "Subnet group for rds postgres Cerbero",
         "SubnetIds": [
           {
-            "Ref": "SubnetDBA"
+            "Fn::ImportValue": "DBA"
           },
           {
-            "Ref": "SubnetDBB"
+            "Fn::ImportValue": "DBB"
           }
         ]
       }

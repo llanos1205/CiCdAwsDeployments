@@ -1,27 +1,8 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "",
-    "Metadata": {
-        "AWS::CloudFormation::Interface": {
-            "ParameterGroups": [
-                {
-                    "Label": {
-                        "default": "Network Configuration"
-                    },
-                    "Parameters": [
-                        "VPC"
-                    ]
-                }
-            ]
-        }
-    },
-    "Parameters": {
-        "VPC": {
-            "Description": "VPC Id",
-            "Type": "String",
-            "Default": "-"
-        }
-    },
+    "Metadata": {},
+    "Parameters": {},
     "Mappings": {},
     "Conditions": {},
     "Resources": {
@@ -31,7 +12,7 @@
                 "GroupDescription": "SG for load balancer nodes",
                 "SecurityGroupIngress": [],
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Fn::ImportValue": "VPCID"
                 },
                 "Tags": [
                     {
@@ -47,7 +28,7 @@
                 "GroupDescription": "-",
                 "SecurityGroupIngress": [],
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Fn::ImportValue": "VPCID"
                 },
                 "Tags": [
                     {
@@ -63,7 +44,7 @@
                 "GroupDescription": "SG for server instances",
                 "SecurityGroupIngress": [],
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Fn::ImportValue": "VPCID"
                 },
                 "Tags": [
                     {
@@ -79,7 +60,7 @@
                 "GroupDescription": "SG for rds/cache/dynamo/aurora instances",
                 "SecurityGroupIngress": [],
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Fn::ImportValue": "VPCID"
                 },
                 "Tags": [
                     {
@@ -278,21 +259,33 @@
         "DataBaseSecurityGroup": {
             "Value": {
                 "Ref": "DataBaseSecurityGroup"
+            },
+            "Export": {
+                "Name": "DataBaseSG"
             }
         },
         "ServerSecurityGroup": {
             "Value": {
                 "Ref": "ServerSecurityGroup"
+            },
+            "Export": {
+                "Name": "ServerSG"
             }
         },
         "BastionSecurityGroup": {
             "Value": {
                 "Ref": "BastionSecurityGroup"
+            },
+            "Export": {
+                "Name": "BastionSG"
             }
         },
         "LoadBalancerSecurityGroup": {
             "Value": {
                 "Ref": "LoadBalancerSecurityGroup"
+            },
+            "Export": {
+                "Name": "LoadBalancerSG"
             }
         }
     }

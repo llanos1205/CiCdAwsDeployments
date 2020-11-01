@@ -6,24 +6,6 @@
       "ParameterGroups": [
         {
           "Label": {
-            "default": "Network Configuration"
-          },
-          "Parameters": [
-            "VPC",
-            "SubnetAId",
-            "SubnetBId"
-          ]
-        },
-        {
-          "Label": {
-            "default": "Security Configuration"
-          },
-          "Parameters": [
-            "BastionSGId"
-          ]
-        },
-        {
-          "Label": {
             "default": "EC2 config"
           },
           "Parameters": [
@@ -44,22 +26,6 @@
       "Description": "the id for ssh the bastions",
       "Type": "String",
       "Default": "bastionkp"
-    },
-    "BastionSGId": {
-      "Description": "Bastion SG Id",
-      "Type": "String"
-    },
-    "SubnetAId": {
-      "Description": "-",
-      "Type": "String"
-    },
-    "SubnetBId": {
-      "Description": "-",
-      "Type": "String"
-    },
-    "VPC": {
-      "Description": "-",
-      "Type": "String"
     }
   },
   "Mappings": {},
@@ -92,10 +58,10 @@
         "HealthCheckType": "EC2",
         "VPCZoneIdentifier": [
           {
-            "Ref": "SubnetAId"
+            "Fn::ImportValue": "PublicA"
           },
           {
-            "Ref": "SubnetBId"
+            "Fn::ImportValue": "PublicB"
           }
         ]
       }
@@ -133,7 +99,7 @@
           "NetworkInterfaces": [],
           "SecurityGroupIds": [
             {
-              "Ref": "BastionSGId"
+              "Fn::ImportValue": "BastionSG"
             }
           ],
           "UserData": {

@@ -800,56 +800,89 @@
     "VPC": {
       "Value": {
         "Ref": "VPC"
+      },
+      "Export": {
+        "Name": "VPCID"
       }
     },
     "PublicA": {
       "Value": {
         "Ref": "PublicA"
+      },
+      "Export": {
+        "Name": "PublicA"
       }
     },
     "PublicB": {
       "Value": {
         "Ref": "PublicB"
+      },
+      "Export": {
+        "Name": "PublicB"
       }
     },
     "Public2A": {
       "Value": {
         "Ref": "Public2A"
+      },
+      "Export": {
+        "Name": "Public2A"
       }
     },
     "Public2B": {
       "Value": {
         "Ref": "Public2B"
+      },
+      "Export": {
+        "Name": "Public2B"
       }
     },
     "PrivateA": {
       "Value": {
         "Ref": "PrivateA"
+      },
+      "Export": {
+        "Name": "PrivateA"
       }
     },
     "PrivateB": {
       "Value": {
         "Ref": "PrivateB"
+      },
+      "Export": {
+        "Name": "PrivateB"
       }
     },
     "Private2A": {
       "Value": {
         "Ref": "Private2A"
+      },
+      "Export": {
+        "Name": "Private2A"
       }
     },
     "Private2B": {
       "Value": {
         "Ref": "Private2B"
+      },
+      "Export": {
+        "Name": "Private2B"
       }
     },
     "DBA": {
       "Value": {
         "Ref": "DBA"
+      },
+      "Export": {
+        "Name": "DBA"
       }
     },
     "DBB": {
       "Value": {
         "Ref": "DBB"
+      },
+      "Export": {
+        "Name": "DBB"
       }
     },
     "EIPA": {
