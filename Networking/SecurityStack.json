@@ -94,6 +94,20 @@
                 "CidrIp": "0.0.0.0/0"
             }
         },
+        "BastionInboundRule2": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "BastionSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "5432",
+                "ToPort": "5432",
+                "SourceSecurityGroupId": {
+                    "Ref": "DataBaseSecurityGroup"
+                }
+            }
+        },
         "ServerInboundRule1": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "Properties": {
@@ -171,6 +185,20 @@
                 "IpProtocol": "tcp",
                 "FromPort": "22",
                 "ToPort": "22",
+                "SourceSecurityGroupId": {
+                    "Ref": "BastionSecurityGroup"
+                }
+            }
+        },
+        "DatabaseInboundRule3": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DataBaseSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "5432",
+                "ToPort": "5432",
                 "SourceSecurityGroupId": {
                     "Ref": "BastionSecurityGroup"
                 }
