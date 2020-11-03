@@ -4,95 +4,65 @@
     <br> 
 </p>
 
-## 📝 Table of Contents
-
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+This project is a infraestructure as a code with cloudformation (AWS) for a web application based on Django and React (Backend and frontend respectively) using the following techonologies
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+This project requires order when building the architecture as each template depends on the output of the others, so te correct order for this would be
 
-### Prerequisites
 
-What things you need to install the software and how to install them.
+## 📝 Table of Contents
 
-```
-Give examples
-```
+- [NetworkStack](#NetworkStack)
+- [SecurityStack](#SecurityStack)
+- [RoleStack](#RoleStack)
+- [BastionStack](#BastionStack)
+- [RdsStack](#RdsStack)
+- [FargateStack](#FargateStack)
+- [S3Stack](#S3Stack)
+- [S3CodePipelineStack](#S3CodePipelineStack) 
+- [FargateCodePipelineStack](#FargateCodePipelineStack) //in progress
+### NetworkStack
 
-### Installing
+    This stack creates a VPC, 10 subnets, IGW, 2 NATGW,2 EIP, 3 route tables with its respective routes
 
-A step by step series of examples that tell you how to get a development env running.
+### SecurityStack
 
-Say what the step will be
+    This stack creates the security groups for databases, bastion tier, webservers and lambda functions (if using the VPC option)
 
-```
-Give the example
-```
 
-And repeat
+### RoleStack
 
-```
-until finished
-```
+    This stack creates roles needed in general for the services
+    #Note 
+        all roles from all others stacks need to be moved here o vice versa (decision still pending)
 
-End with an example of getting some data out of the system or using it for a little demo.
 
-## 🔧 Running the tests <a name = "tests"></a>
+### BastionStack
 
-Explain how to run the automated tests for this system.
+    This stack creates a HA Bastion tier, keep in mid that without this tiers there is no other acces to the VPC resources
 
-### Break down into end to end tests
+### RdsStack
+    This stack creates a RDS multi AZ instance with PostgreSql 12 engine
+    #Note 
+    Read replicas still pending
 
-Explain what these tests test and why
+### FargateStack
+    This stack creates a Load Balanced Fargate cluster, which by default pulls my django project (backend)
+### S3Stack
+    This stack creates a S3 static webhosting bucket,for it to hold all the static files from the react application (frontend)
+### S3CodePipelineStack
+    This stack createsa pipeline  for the react application to be deployed in the s3 bucket
+* pulls code from github
+* builds node to create a bundle.zip
+* extract that bundle to the bucket
+### FargateCodePipelineStack
+    This stack creates a pipeline that deploys the django services (one by now as others micro services still in creation)
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## 🎈 Usage <a name="usage"></a>
-
-Add notes about how to use the system.
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-Add additional notes about how to deploy this on a live system.
-
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
-
-## ✍️ Authors <a name = "authors"></a>
-
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
-
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+* pulls code from github
+* runs docker build
+* pushes to docker hub 2 images (the appropiaate version & latest)
+* deploys to fargate with a Blue/Green Deployment
