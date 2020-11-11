@@ -108,6 +108,7 @@
                 "\n",
                 [
                   "#!/bin/bash",
+                  "echo preparing eip conector",
                   "export AWS_DEFAULT_REGION=us-east-1",
                   "INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)",
                   {
@@ -122,7 +123,19 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "sudo yum -y update",
+                  "echo preparing redis....",
+                  "sudo wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm",
+                  "sudo rpm -ivh epel-release-latest-6.noarch.rpm",
+                  "sudo yum clean all",
+                  "sudo yum repolist",
+                  "sudo yum -y install redis",
+                  "sudo service redis start",
+                  "echo preparing postgresql",
+                  "sudo yum -y install postgresql-server postgresql-contrib",
+                  "sudo postgresql-setup initdb",
+                  "sudo systemctl start postgresql"
                 ]
               ]
             }

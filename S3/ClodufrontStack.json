@@ -15,7 +15,16 @@
     },
     "Resources": {
         
-        "cloudfrontDistribution": {
+        "GreenDistribution": {
+           "Type": "AWS::CloudFront::Distribution",
+           "Properties": {
+              "DistributionConfig": [
+                  
+              ]
+           }
+        },
+        
+        "BlueDistribution": {
            "Type": "AWS::CloudFront::Distribution",
            "Properties": {
               "DistributionConfig": [
@@ -23,6 +32,7 @@
               ]
            }
         }
+        
         
     },
     "Outputs": {
