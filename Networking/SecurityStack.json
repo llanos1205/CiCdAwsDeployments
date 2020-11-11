@@ -218,6 +218,34 @@
                 }
             }
         },
+        "DatabaseInboundRule4": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DataBaseSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "6379",
+                "ToPort": "6379",
+                "SourceSecurityGroupId": {
+                    "Ref": "ServerSecurityGroup"
+                }
+            }
+        },
+        "DatabaseInboundRule5": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                "GroupId": {
+                    "Ref": "DataBaseSecurityGroup"
+                },
+                "IpProtocol": "tcp",
+                "FromPort": "6379",
+                "ToPort": "6379",
+                "SourceSecurityGroupId": {
+                    "Ref": "BastionSecurityGroup"
+                }
+            }
+        },
         "DatabaseOutboundRule1": {
             "Type": "AWS::EC2::SecurityGroupEgress",
             "Properties": {

@@ -12,7 +12,7 @@
     "Mappings": {},
     "Conditions": {},
     "Resources": {
-        "s3Bucket": {
+        "WebBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
                 "AccessControl": "PublicRead",
@@ -41,7 +41,7 @@
                             "Action": [
                                 "s3:GetObject"
                             ],
-                            "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "s3Bucket" } , "/*" ]]}
+                            "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "WebBucket" } , "/*" ]]}
                         }
                     ]
                 }

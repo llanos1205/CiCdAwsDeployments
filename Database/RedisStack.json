@@ -1,0 +1,60 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        
+        "elasticacheCacheCluster": {
+           "Type": "AWS::ElastiCache::CacheCluster",
+           "Properties":
+           {
+              "AutoMinorVersionUpgrade": "true",
+              "CacheNodeType": "cache.t3.micro",
+         
+              "VpcSecurityGroupIds": [ {
+               "Fn::ImportValue": "DataBaseSG"
+             } ],
+              "CacheSubnetGroupName": 
+              { "Ref": "elasticacheSubnetGroup" }
+              ,
+              "ClusterName": "RedisCluster",
+              "Engine": "redis",
+              "EngineVersion": "6.x",
+       
+              "NumCacheNodes": 1,
+              "Port": "6379"
+           }
+        },
+        
+        "elasticacheSubnetGroup": {
+            "Type": "AWS::ElastiCache::SubnetGroup",
+            "Properties": {
+                "Description": "",
+                "SubnetIds": [ {
+                  "Fn::ImportValue": "DBA"
+                },
+                {
+                  "Fn::ImportValue": "DBB"
+                }
+                 ]
+            }
+        }
+        
+        
+        
+    },
+    "Outputs": {
+
+    }
+}
