@@ -339,17 +339,15 @@
         ]
       }
     },
-    "NACLPublicA1SubnetAsoc":{
-        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
-        "Properties" : {
-            "NetworkAclId" : 
-            { "Ref": "NACLPublicA1" }
-            ,
-            "SubnetId" : {
-                "Fn::ImportValue": "PublicA"
-              }
-          }
-      },      
+    "NACLPublicA1SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA1" },
+        "SubnetId": {
+          "Fn::ImportValue": "PublicA"
+        }
+      }
+    },
 
     "NACLPublicA1Inbound10": {
       "Type": "AWS::EC2::NetworkAclEntry",
@@ -379,20 +377,6 @@
         "RuleNumber": 20
       }
     },
-    "NACLPublicA1Inbound30": {
-      "Type": "AWS::EC2::NetworkAclEntry",
-      "Properties": {
-        "NetworkAclId": { "Ref": "NACLPublicA1" },
-        "CidrBlock": "10.0.2.0/24",
-        "PortRange": {
-          "From": 80,
-          "To": 80
-        },
-        "Protocol": 6,
-        "RuleAction": "allow",
-        "RuleNumber": 30
-      }
-    },
     "NACLPublicA1Outbound100": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
@@ -418,17 +402,15 @@
         ]
       }
     },
-    "NACLPublicB1SubnetAsoc":{
-        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
-        "Properties" : {
-            "NetworkAclId" : 
-            { "Ref": "NACLPublicB1" }
-            ,
-            "SubnetId" : {
-                "Fn::ImportValue": "PublicB"
-              }
-          }
-      }, 
+    "NACLPublicB1SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB1" },
+        "SubnetId": {
+          "Fn::ImportValue": "PublicB"
+        }
+      }
+    },
     "NACLPublicB1Inbound10": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
@@ -457,20 +439,6 @@
         "RuleNumber": 20
       }
     },
-    "NACLPublicB1Inbound30": {
-      "Type": "AWS::EC2::NetworkAclEntry",
-      "Properties": {
-        "NetworkAclId": { "Ref": "NACLPublicB1" },
-        "CidrBlock": "10.0.6.0/24",
-        "PortRange": {
-          "From": 80,
-          "To": 80
-        },
-        "Protocol": 6,
-        "RuleAction": "allow",
-        "RuleNumber": 30
-      }
-    },
     "NACLPublicB1Outbound100": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
@@ -491,23 +459,36 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "NACLPublicAB2"
+            "Value": "NACLPublicB2"
           }
         ]
       }
     },
-    "NACLPublicB2SubnetAsoc":{
-        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
-        "Properties" : {
-            "NetworkAclId" : 
-            { "Ref": "NACLPublicB2" }
-            ,
-            "SubnetId" : {
-                "Fn::ImportValue": "Public2B"
-              }
-          }
-      }, 
+    "NACLPublicB2SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "SubnetId": {
+          "Fn::ImportValue": "Public2B"
+        }
+      }
+    },
     "NACLPublicB2Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+
+    "NACLPublicB2Inbound11": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -518,10 +499,11 @@
         },
         "Protocol": 6,
         "RuleAction": "allow",
-        "RuleNumber": 10
+        "RuleNumber": 11
       }
     },
-    "NACLPublicB2Inbound20": {
+
+    "NACLPublicB2Inbound12": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -532,10 +514,25 @@
         },
         "Protocol": 6,
         "RuleAction": "allow",
-        "RuleNumber": 20
+        "RuleNumber": 12
       }
     },
-    "NACLPublicB2Inbound30": {
+
+    "NACLPublicB2Inbound13": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 32768,
+          "To": 65535
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 13
+      }
+    },
+    "NACLPublicB2Inbound20": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -546,10 +543,10 @@
         },
         "Protocol": 6,
         "RuleAction": "allow",
-        "RuleNumber": 30
+        "RuleNumber": 20
       }
     },
-    "NACLPublicB2Inbound40": {
+    "NACLPublicB2Inbound30": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -560,11 +557,11 @@
         },
         "Protocol": 6,
         "RuleAction": "allow",
-        "RuleNumber": 40
+        "RuleNumber": 30
       }
     },
 
-    "NACLPublicB2Inbound50": {
+    "NACLPublicB2Inbound40": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -575,10 +572,10 @@
           "To": 6379
         },
         "RuleAction": "allow",
-        "RuleNumber": 50
+        "RuleNumber": 40
       }
     },
-    "NACLPublicB2Inbound60": {
+    "NACLPublicB2Inbound50": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -589,11 +586,11 @@
         },
         "Protocol": 6,
         "RuleAction": "allow",
-        "RuleNumber": 60
+        "RuleNumber": 50
       }
     },
 
-    "NACLPublicB2Inbound70": {
+    "NACLPublicB2Inbound60": {
       "Type": "AWS::EC2::NetworkAclEntry",
       "Properties": {
         "NetworkAclId": { "Ref": "NACLPublicB2" },
@@ -601,7 +598,7 @@
 
         "Protocol": -1,
         "RuleAction": "allow",
-        "RuleNumber": 70
+        "RuleNumber": 60
       }
     },
     "NACLPublicB2Outbound100": {
@@ -616,138 +613,660 @@
       }
     },
     "NACLPublicA2": {
-        "Type": "AWS::EC2::NetworkAcl",
-        "Properties": {
-          "VpcId": {
-            "Fn::ImportValue": "VPCID"
-          },
-          "Tags": [
-            {
-              "Key": "Name",
-              "Value": "NACLPublicA2"
-            }
-          ]
-        }
-      },
-      "NACLPublicA2SubnetAsoc":{
-          "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
-          "Properties" : {
-              "NetworkAclId" : 
-              { "Ref": "NACLPublicA2" }
-              ,
-              "SubnetId" : {
-                  "Fn::ImportValue": "Public2A"
-                }
-            }
-        }, 
-      "NACLPublicA2Inbound10": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "0.0.0.0/0",
-          "PortRange": {
-            "From": 80,
-            "To": 80
-          },
-          "Protocol": 6,
-          "RuleAction": "allow",
-          "RuleNumber": 10
-        }
-      },
-      "NACLPublicA2Inbound20": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "0.0.0.0/0",
-          "PortRange": {
-            "From": 443,
-            "To": 443
-          },
-          "Protocol": 6,
-          "RuleAction": "allow",
-          "RuleNumber": 20
-        }
-      },
-      "NACLPublicA2Inbound30": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "10.0.2.0/24",
-          "PortRange": {
-            "From": 22,
-            "To": 22
-          },
-          "Protocol": 6,
-          "RuleAction": "allow",
-          "RuleNumber": 30
-        }
-      },
-      "NACLPublicA2Inbound40": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "10.0.3.0/24",
-          "PortRange": {
-            "From": 5432,
-            "To": 5432
-          },
-          "Protocol": 6,
-          "RuleAction": "allow",
-          "RuleNumber": 40
-        }
-      },
-  
-      "NACLPublicA2Inbound50": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "10.0.3.0/24",
-          "Protocol": 6,
-          "PortRange": {
-            "From": 6379,
-            "To": 6379
-          },
-          "RuleAction": "allow",
-          "RuleNumber": 50
-        }
-      },
-      "NACLPublicA2Inbound60": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "10.0.4.0/24",
-          "PortRange": {
-            "From": 22,
-            "To": 22
-          },
-          "Protocol": 6,
-          "RuleAction": "allow",
-          "RuleNumber": 60
-        }
-      },
-  
-      "NACLPublicA2Inbound70": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "10.0.6.0/24",
-  
-          "Protocol": -1,
-          "RuleAction": "allow",
-          "RuleNumber": 70
-        }
-      },
-      "NACLPublicA2Outbound100": {
-        "Type": "AWS::EC2::NetworkAclEntry",
-        "Properties": {
-          "NetworkAclId": { "Ref": "NACLPublicA2" },
-          "CidrBlock": "0.0.0.0/0",
-          "Protocol": -1,
-          "RuleAction": "allow",
-          "RuleNumber": 100,
-          "Egress": true
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPublicA2"
+          }
+        ]
+      }
+    },
+    "NACLPublicA2SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "SubnetId": {
+          "Fn::ImportValue": "Public2A"
         }
       }
+    },
+    "NACLPublicA2Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPublicA2Inbound11": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 11
+      }
+    },
+
+    "NACLPublicA2Inbound12": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 443,
+          "To": 443
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 12
+      }
+    },
+
+    "NACLPublicA2Inbound13": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 32768,
+          "To": 65535
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 13
+      }
+    },
+    "NACLPublicA2Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "10.0.2.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPublicA2Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "10.0.3.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+
+    "NACLPublicA2Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "10.0.3.0/24",
+        "Protocol": 6,
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+    "NACLPublicA2Inbound50": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "10.0.4.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 50
+      }
+    },
+
+    "NACLPublicA2Inbound60": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "10.0.6.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 60
+      }
+    },
+    "NACLPublicA2Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateA1": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateA1"
+          }
+        ]
+      }
+    },
+    "NACLPrivateA1SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "SubnetId": {
+          "Fn::ImportValue": "PrivateA"
+        }
+      }
+    },
+    "NACLPrivateA1Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "10.0.0.0/24",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateA1Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "10.0.1.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateA1Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "10.0.3.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPrivateA1Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "10.0.3.0/24",
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+    "NACLPrivateA1Inbound50": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "10.0.7.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 50
+      }
+    },
+    "NACLPrivateA1Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA1" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateB1": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateB1"
+          }
+        ]
+      }
+    },
+    "NACLPrivateB1SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "SubnetId": {
+          "Fn::ImportValue": "PrivateB"
+        }
+      }
+    },
+    "NACLPrivateB1Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "10.0.5.0/24",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateB1Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "10.0.6.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateB1Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "10.0.8.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPrivateB1Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "10.0.8.0/24",
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+    "NACLPrivateB1Inbound50": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "10.0.2.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 50
+      }
+    },
+    "NACLPrivateB1Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB1" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateA2": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateA2"
+          }
+        ]
+      }
+    },
+    "NACLPrivateA2SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "SubnetId": {
+          "Fn::ImportValue": "DBA"
+        }
+      }
+    },
+    "NACLPrivateA2Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "CidrBlock": "10.0.2.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateA2Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "CidrBlock": "10.0.2.0/24",
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateA2Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "CidrBlock": "10.0.1.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPrivateA2Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "CidrBlock": "10.0.8.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+    "NACLPrivateA2Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA2" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateB2": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateB2"
+          }
+        ]
+      }
+    },
+    "NACLPrivateB2SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "SubnetId": {
+          "Fn::ImportValue": "DBB"
+        }
+      }
+    },
+    "NACLPrivateB2Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "CidrBlock": "10.0.7.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateB2Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "CidrBlock": "10.0.7.0/24",
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateB2Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "CidrBlock": "10.0.6.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPrivateB2Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "CidrBlock": "10.0.3.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+    "NACLPrivateB2Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateA3": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateA3"
+          }
+        ]
+      }
+    },
+    "NACLPrivateA3SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA3" },
+        "SubnetId": {
+          "Fn::ImportValue": "Private2A"
+        }
+      }
+    },
+    "NACLPrivateA3Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA3" },
+        "CidrBlock": "10.0.1.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateA3Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA3" },
+        "CidrBlock": "10.0.7.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateA3Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateA3" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPrivateB3": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPrivateB3"
+          }
+        ]
+      }
+    },
+    "NACLPrivateB3SubnetAsoc": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB3" },
+        "SubnetId": {
+          "Fn::ImportValue": "Private2B"
+        }
+      }
+    },
+    "NACLPrivateB3Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB3" },
+        "CidrBlock": "10.0.6.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPrivateB3Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB3" },
+        "CidrBlock": "10.0.4.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPrivateB3Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPrivateB3" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    }
   },
   "Outputs": {
     "DataBaseSecurityGroup": {
