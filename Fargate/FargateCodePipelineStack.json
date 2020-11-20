@@ -147,24 +147,22 @@
                                     "Category": "Deploy",
                                     "Owner": "AWS",
                                     "Version": "1",
-                                    "Provider": "ECS"
-                                    
-                                    
-                                    
+                                    "Provider": "CodeDeployToECS"
                                 },
                                 "Configuration": {
-                                    "ClusterName": 
-                                    { "Ref": "logicalName" }
+                                    "AppSpecTemplateArtifact": "SourceArtifact",
+                                    "ApplicationName": 
+                                    { "Ref": "Deploy" }
                                     ,
-                                    "ServiceName": 
-                                    { "Ref": "logicalName" }
+                                    "DeploymentGroupName": 
+                                    { "Ref": "deployGroup" }
                                     ,
-                                    "FileName":
-                                    { "Ref": "logicalName" }
-                                    ,
-                                    "DeploymentTimeout":"15"
-                             
-                                  }
+                                    "Image1ArtifactName": "MyImage",
+                                    "Image1ContainerName": "IMAGE1_NAME",
+                                    "TaskDefinitionTemplatePath": "taskdef.json",
+                                    "AppSpecTemplatePath": "appspec.yaml",
+                                    "TaskDefinitionTemplateArtifact": "SourceArtifact"
+                                }
                             }
                         ]
                     }
@@ -191,6 +189,32 @@
                 "TimeoutInMinutes": 10
             }
         },
+        "Deploy":{
+            "Type" : "AWS::CodeDeploy::Application",
+            "Properties" : {
+                "ApplicationName" : "CerberoDeploy",
+                "ComputePlatform" : "ECS"
+              }
+          },
+          "deployGroup":{
+            "Type" : "AWS::CodeDeploy::DeploymentGroup",
+            "Properties" : {
+                "AlarmConfiguration" : AlarmConfiguration,
+                "ApplicationName" : 
+                { "Ref": "Deploy" }
+                ,
+                "AutoRollbackConfiguration" : AutoRollbackConfiguration,
+                "AutoScalingGroups" : [ String, ... ],
+                "Deployment" : Deployment,
+                "DeploymentConfigName" : String,
+                "DeploymentGroupName" : String,
+                "DeploymentStyle" : DeploymentStyle,
+                "LoadBalancerInfo" : LoadBalancerInfo,
+                "ServiceRoleArn" : String,
+                "TriggerConfigurations" : [ TriggerConfig, ... ]
+              }
+          }
+,          
         "Webhook": {
             "Type": "AWS::CodePipeline::Webhook",
             "Properties": {

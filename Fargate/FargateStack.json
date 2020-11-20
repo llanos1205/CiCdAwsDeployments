@@ -1,361 +1,374 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "",
-    "Metadata": {
-        "AWS::CloudFormation::Interface": {
-            "ParameterGroups": [
-                {
-                    "Label": {
-                        "default": "Docker config"
-                    },
-                    "Parameters": [
-                        "ImagePath",
-                        "ImagePort",
-                        "DB_USER",
-                        "DB_PASSWORD",
-                        "DB_HOST"
-                    ]
-                }
-            ]
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Docker config"
+          },
+          "Parameters": [
+            "ImagePath",
+            "ImagePort",
+            "DB_USER",
+            "DB_PASSWORD",
+            "DB_HOST"
+          ]
         }
-    },
-    "Parameters": {
-        "ImagePath": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "docker.io/llanos1205/cerbero"
-        },
-        "ImagePort": {
-            "Description": "-",
-            "Type": "Number",
-            "Default": 8800
-        },
-        "DBHOST": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "-"
-        },
-        "DBPASSWORD": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "test1205"
-        },
-        "DBUSER": {
-            "Description": "-",
-            "Type": "String",
-            "Default": "postgres"
-        }
-    },
-    "Mappings": {},
-    "Conditions": {},
-    "Resources": {
-        "CerberoCluster": {
-            "Type": "AWS::ECS::Cluster",
-            "Properties": {
-                "ClusterName": "CerberoCluster"
-            }
-        },
-        "CerberoTaskDef": {
-            "Type": "AWS::ECS::TaskDefinition",
-            "Properties": {
-                "Family": "Cerbero",
-                "NetworkMode": "awsvpc",
-                "RequiresCompatibilities": [
-                    "FARGATE"
-                ],
-                "Cpu": "256",
-                "Memory": "0.5GB",
-                "ExecutionRoleArn": {
-                    "Ref": "ECSexeRole"
-                },
-                "TaskRoleArn": {
-                    "Ref": "TaskRole"
-                },
-                "ContainerDefinitions": [
-                    {
-                        "Name": "CerberoContainer",
-                        "Image": {
-                            "Ref": "ImagePath"
-                        },
-                        "PortMappings": [
-                            {
-                                "ContainerPort": {
-                                    "Ref": "ImagePort"
-                                }
-                            }
-                        ],
-                        "LogConfiguration": {
-                            "LogDriver": "awslogs",
-                            "Options": {
-                                "awslogs-region": "us-east-1",
-                                "awslogs-group": {
-                                    "Ref": "LogGroup"
-                                },
-                                "awslogs-stream-prefix": "ecs"
-                            }
-                        },
-                        "Environment": [
-                            {
-                                "Name": "DB_HOST",
-                                "Value": {
-                                    "Ref": "DBHOST"
-                                }
-                            },
-                            {
-                                "Name": "DB_PASSWORD",
-                                "Value": {
-                                    "Ref": "DBPASSWORD"
-                                }
-                            },
-                            {
-                                "Name": "DB_USER",
-                                "Value": {
-                                    "Ref": "DBUSER"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        "ECSexeRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Statement": {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "ecs-tasks.amazonaws.com"
-                        },
-                        "Action": "sts:AssumeRole"
-                    }
-                },
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-                ]
-            }
-        },
-        "TaskRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Statement": {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "ecs-tasks.amazonaws.com"
-                        },
-                        "Action": "sts:AssumeRole"
-                    }
-                }
-            }
-        },
-        "ASGRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Statement": {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "ecs-tasks.amazonaws.com"
-                        },
-                        "Action": "sts:AssumeRole"
-                    }
-                },
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
-                ]
-            }
-        },
-        "CerberoService": {
-            "Type": "AWS::ECS::Service",
-            "DependsOn": [
-                "Listenner"
-            ],
-            "Properties": {
-                "ServiceName": "CerberoService",
-                "Cluster": {
-                    "Ref": "CerberoCluster"
-                },
-                "TaskDefinition": {
-                    "Ref": "CerberoTaskDef"
-                },
-                "DeploymentConfiguration": {
-                    "MinimumHealthyPercent": 100,
-                    "MaximumPercent": 200
-                },
-                "DesiredCount": 1,
-                "HealthCheckGracePeriodSeconds": 100,
-                "LaunchType": "FARGATE",
-                "NetworkConfiguration": {
-                    "AwsvpcConfiguration": {
-                        "AssignPublicIp": "DISABLED",
-                        "Subnets": [
-                            {
-                                "Fn::ImportValue": "PrivateA"
-                            },
-                            {
-                                "Fn::ImportValue": "PrivateB"
-                            }
-                        ],
-                        "SecurityGroups": [
-                            {
-                                "Fn::ImportValue": "ServerSG"
-                            }
-                        ]
-                    }
-                },
-                "LoadBalancers": [
-                    {
-                        "ContainerName": "CerberoContainer",
-                        "ContainerPort": {
-                            "Ref": "ImagePort"
-                        },
-                        "TargetGroupArn": {
-                            "Ref": "CerberoTargetGroup"
-                        }
-                    }
-                ]
-            }
-        },
-        "CerberoTargetGroup": {
-            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-            "Properties": {
-                "HealthCheckIntervalSeconds": 100,
-                "HealthCheckPath": "/",
-                "HealthCheckTimeoutSeconds": 50,
-                "HealthyThresholdCount": 2,
-                "UnhealthyThresholdCount": 2,
-                "Name": "CerberoTargetGroup",
-                "Port": 
-                { "Ref": "ImagePort" }
-                ,
-                "Protocol": "HTTP",
-                "TargetType": "ip",
-                "VpcId": {
-                    "Fn::ImportValue": "VPCID"
-                }
-            }
-        },
-        "Listenner": {
-            "Type": "AWS::ElasticLoadBalancingV2::Listener",
-            "Properties": {
-                "DefaultActions": [
-                    {
-                        "TargetGroupArn": {
-                            "Ref": "CerberoTargetGroup"
-                        },
-                        "Type": "forward"
-                    }
-                ],
-                "LoadBalancerArn": {
-                    "Ref": "CerberoLoadBalancer"
-                },
-                "Port": 80,
-                "Protocol": "HTTP"
-            }
-        },
-        "CerberoLoadBalancer": {
-            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-            "Properties": {
-                "Name": "CerberoLoadBalancer",
-                "Scheme": "internet-facing",
-                "SecurityGroups": [
-                    {
-                        "Fn::ImportValue": "LoadBalancerSG"
-                    }
-                ],
-                "Subnets": [
-                    {
-                        "Fn::ImportValue": "Public2A"
-                    },
-                    {
-                        "Fn::ImportValue": "Public2B"
-                    }
-                ]
-            }
-        },
-        "LogGroup": {
-            "Type": "AWS::Logs::LogGroup",
-            "Properties": {
-                "LogGroupName": "CerberoLogGroup"
-            }
-        },
-        "AutoScalingTarget": {
-            "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
-            "Properties": {
-                "MaxCapacity": 3,
-                "MinCapacity": 1,
-                "ResourceId": {
-                    "Fn::Join": [
-                        "/",
-                        [
-                            "service",
-                            {
-                                "Ref": "CerberoCluster"
-                            },
-                            {
-                                "Fn::GetAtt": [
-                                    "CerberoService",
-                                    "Name"
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ScalableDimension": "ecs:service:DesiredCount",
-                "ServiceNamespace": "ecs",
-                "RoleARN": {
-                    "Fn::GetAtt": [
-                        "ASGRole",
-                        "Arn"
-                    ]
-                }
-            }
-        },
-        "AutoScaleingTargetPolicy": {
-            "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
-            "Properties": {
-                "PolicyName": "AutoScaleingTargetPolicy",
-                "PolicyType": "TargetTrackingScaling",
-                "ScalingTargetId": {
-                    "Ref": "AutoScalingTarget"
-                },
-                "TargetTrackingScalingPolicyConfiguration": {
-                    "PredefinedMetricSpecification": {
-                        "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
-                    },
-                    "ScaleInCooldown": 10,
-                    "ScaleOutCooldown": 10,
-                    "TargetValue": 10
-                }
-            }
-        }
-    },
-    "Outputs": {
-        "LoadBalancerID": {
-            "Value": {
-                "Ref": "CerberoLoadBalancer"
-            }
-        },
-        "CerberoTargetGroup": {
-            "Value": {
-                "Ref": "CerberoTargetGroup"
-            }
-        },
-        "CerberoService": {
-            "Value": {
-                "Ref": "CerberoService"
-            }
-        },
-        "CerberoTaskDef": {
-            "Value": {
-                "Ref": "CerberoTaskDef"
-            }
-        },
-        "CerberoCluster": {
-            "Value": {
-                "Ref": "CerberoCluster"
-            }
-        }
+      ]
     }
+  },
+  "Parameters": {
+    "ImagePath": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "docker.io/llanos1205/cerbero"
+    },
+    "ImagePort": {
+      "Description": "-",
+      "Type": "Number",
+      "Default": 8800
+    },
+    "DBHOST": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "-"
+    },
+    "DBPASSWORD": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "test1205"
+    },
+    "DBUSER": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "postgres"
+    }
+  },
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "CerberoCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": "CerberoCluster"
+      }
+    },
+    "CerberoTaskDef": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": "Cerbero",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": ["FARGATE"],
+        "Cpu": "256",
+        "Memory": "0.5GB",
+        "ExecutionRoleArn": {
+          "Ref": "ECSexeRole"
+        },
+        "TaskRoleArn": {
+          "Ref": "TaskRole"
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "CerberoContainer",
+            "Image": {
+              "Ref": "ImagePath"
+            },
+            "PortMappings": [
+              {
+                "ContainerPort": {
+                  "Ref": "ImagePort"
+                }
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-region": "us-east-1",
+                "awslogs-group": {
+                  "Ref": "LogGroup"
+                },
+                "awslogs-stream-prefix": "ecs"
+              }
+            },
+            "Environment": [
+              {
+                "Name": "DB_HOST",
+                "Value": {
+                  "Ref": "DBHOST"
+                }
+              },
+              {
+                "Name": "DB_PASSWORD",
+                "Value": {
+                  "Ref": "DBPASSWORD"
+                }
+              },
+              {
+                "Name": "DB_USER",
+                "Value": {
+                  "Ref": "DBUSER"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ECSexeRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ecs-tasks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+        ]
+      }
+    },
+    "TaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ecs-tasks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        }
+      }
+    },
+    "ASGRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ecs-tasks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
+        ]
+      }
+    },
+    "CerberoService": {
+      "Type": "AWS::ECS::Service",
+      "DependsOn": ["Listenner"],
+      "Properties": {
+        "ServiceName": "CerberoService",
+        "Cluster": {
+          "Ref": "CerberoCluster"
+        },
+        "DeploymentController": {
+          "Type": "CODE_DEPLOY"
+        },
+        "TaskDefinition": {
+          "Ref": "CerberoTaskDef"
+        },
+        "DeploymentConfiguration": {
+          "MinimumHealthyPercent": 100,
+          "MaximumPercent": 200
+        },
+        "DesiredCount": 1,
+        "HealthCheckGracePeriodSeconds": 100,
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "Subnets": [
+              {
+                "Fn::ImportValue": "PrivateA"
+              },
+              {
+                "Fn::ImportValue": "PrivateB"
+              }
+            ],
+            "SecurityGroups": [
+              {
+                "Fn::ImportValue": "ServerSG"
+              }
+            ]
+          }
+        },
+        "LoadBalancers": [
+          {
+            "ContainerName": "CerberoContainer",
+            "ContainerPort": {
+              "Ref": "ImagePort"
+            },
+            "TargetGroupArn": {
+              "Ref": "CerberoGreenTargetGroup"
+            }
+          }
+        ]
+      }
+    },
+    "CerberoGreenTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "HealthCheckIntervalSeconds": 100,
+        "HealthCheckPath": "/",
+        "HealthCheckTimeoutSeconds": 50,
+        "HealthyThresholdCount": 2,
+        "UnhealthyThresholdCount": 2,
+        "Name": "CerberoGreenTargetGroup",
+        "Port": { "Ref": "ImagePort" },
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        }
+      }
+    },
+    "CerberoBlueTargetGroup": {
+        "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+        "Properties": {
+          "HealthCheckIntervalSeconds": 100,
+          "HealthCheckPath": "/",
+          "HealthCheckTimeoutSeconds": 50,
+          "HealthyThresholdCount": 2,
+          "UnhealthyThresholdCount": 2,
+          "Name": "CerberoBlueTargetGroup",
+          "Port": { "Ref": "ImagePort" },
+          "Protocol": "HTTP",
+          "TargetType": "ip",
+          "VpcId": {
+            "Fn::ImportValue": "VPCID"
+          }
+        }
+      },
+    "Listenner": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "CerberoGreenTargetGroup"
+            },
+            "Type": "forward"
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "CerberoLoadBalancer"
+        },
+        "Port": 80,
+        "Protocol": "HTTP"
+      }
+    },
+    "CerberoLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Name": "CerberoLoadBalancer",
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::ImportValue": "LoadBalancerSG"
+          }
+        ],
+        "Subnets": [
+          {
+            "Fn::ImportValue": "Public2A"
+          },
+          {
+            "Fn::ImportValue": "Public2B"
+          }
+        ]
+      }
+    },
+    "LogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "CerberoLogGroup"
+      }
+    },
+    "AutoScalingTarget": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "Properties": {
+        "MaxCapacity": 3,
+        "MinCapacity": 1,
+        "ResourceId": {
+          "Fn::Join": [
+            "/",
+            [
+              "service",
+              {
+                "Ref": "CerberoCluster"
+              },
+              {
+                "Fn::GetAtt": ["CerberoService", "Name"]
+              }
+            ]
+          ]
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+        "RoleARN": {
+          "Fn::GetAtt": ["ASGRole", "Arn"]
+        }
+      }
+    },
+    "AutoScaleingTargetPolicy": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": "AutoScaleingTargetPolicy",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "AutoScalingTarget"
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+          },
+          "ScaleInCooldown": 10,
+          "ScaleOutCooldown": 10,
+          "TargetValue": 10
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "LoadBalancerID": {
+      "Value": {
+        "Ref": "CerberoLoadBalancer"
+      }
+    },
+    "CerberoGreenTargetGroup": {
+      "Value": {
+        "Ref": "CerberoGreenTargetGroup"
+      }
+    },
+    "CerberoBlueTargetGroup": {
+        "Value": {
+          "Ref": "CerberoBlueTargetGroup"
+        }
+      },
+    "CerberoService": {
+      "Value": {
+        "Ref": "CerberoService"
+      }
+    },
+    "CerberoTaskDef": {
+      "Value": {
+        "Ref": "CerberoTaskDef"
+      }
+    },
+    "CerberoCluster": {
+      "Value": {
+        "Ref": "CerberoCluster"
+      }
+    }
+  }
 }

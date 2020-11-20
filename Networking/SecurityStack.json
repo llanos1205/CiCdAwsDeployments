@@ -1,334 +1,786 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "",
-    "Metadata": {},
-    "Parameters": {},
-    "Mappings": {},
-    "Conditions": {},
-    "Resources": {
-        "LoadBalancerSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "SG for load balancer nodes",
-                "SecurityGroupIngress": [],
-                "VpcId": {
-                    "Fn::ImportValue": "VPCID"
-                },
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "LoadBalancerSecurityGroup"
-                    }
-                ]
-            }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "LoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for load balancer nodes",
+        "SecurityGroupIngress": [],
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
         },
-        "BastionSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "-",
-                "SecurityGroupIngress": [],
-                "VpcId": {
-                    "Fn::ImportValue": "VPCID"
-                },
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "BastionSecurityGroup"
-                    }
-                ]
-            }
-        },
-        "ServerSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "SG for server instances",
-                "SecurityGroupIngress": [],
-                "VpcId": {
-                    "Fn::ImportValue": "VPCID"
-                },
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "ServerSecurityGroup"
-                    }
-                ]
-            }
-        },
-        "DataBaseSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "SG for rds/cache/dynamo/aurora instances",
-                "SecurityGroupIngress": [],
-                "VpcId": {
-                    "Fn::ImportValue": "VPCID"
-                },
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "DataBaseSecurityGroup"
-                    }
-                ]
-            }
-        },
-        "BastionOutboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "BastionSecurityGroup"
-                },
-                "IpProtocol": "-1",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "BastionInboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "BastionSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "22",
-                "ToPort": "22",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "BastionInboundRule2": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "BastionSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "5432",
-                "ToPort": "5432",
-                "SourceSecurityGroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                }
-            }
-        },
-        "ServerInboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "ServerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "22",
-                "ToPort": "22",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
-            }
-        },
-        "ServerInboundRule2": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "ServerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "5432",
-                "ToPort": "5432",
-                "SourceSecurityGroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                }
-            }
-        },
-        "ServerInboundRule3": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "ServerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "1",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                }
-            }
-        },
-        "ServerInboundRule4": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "ServerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "443",
-                "ToPort": "443",
-                "SourceSecurityGroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                }
-            }
-        },
-        "ServerOutboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "ServerSecurityGroup"
-                },
-                "IpProtocol": "-1",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "DatabaseInboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "22",
-                "ToPort": "22",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
-            }
-        },
-        "DatabaseInboundRule3": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "5432",
-                "ToPort": "5432",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
-            }
-        },
-        "DatabaseInboundRule2": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "5432",
-                "ToPort": "5432",
-                "SourceSecurityGroupId": {
-                    "Ref": "ServerSecurityGroup"
-                }
-            }
-        },
-        "DatabaseInboundRule4": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "6379",
-                "ToPort": "6379",
-                "SourceSecurityGroupId": {
-                    "Ref": "ServerSecurityGroup"
-                }
-            }
-        },
-        "DatabaseInboundRule5": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "6379",
-                "ToPort": "6379",
-                "SourceSecurityGroupId": {
-                    "Ref": "BastionSecurityGroup"
-                }
-            }
-        },
-        "DatabaseOutboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "DataBaseSecurityGroup"
-                },
-                "IpProtocol": "-1",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "LBOutboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupEgress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "0",
-                "ToPort": "65535",
-                "SourceSecurityGroupId": {
-                    "Ref": "ServerSecurityGroup"
-                }
-            }
-        },
-        "LBInboundRule1": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "80",
-                "ToPort": "80",
-                "CidrIp": "0.0.0.0/0"
-            }
-        },
-        "LBInboundRule2": {
-            "Type": "AWS::EC2::SecurityGroupIngress",
-            "Properties": {
-                "GroupId": {
-                    "Ref": "LoadBalancerSecurityGroup"
-                },
-                "IpProtocol": "tcp",
-                "FromPort": "443",
-                "ToPort": "443",
-                "CidrIp": "0.0.0.0/0"
-            }
-        }
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LoadBalancerSecurityGroup"
+          }
+        ]
+      }
     },
-    "Outputs": {
-        "DataBaseSecurityGroup": {
-            "Value": {
-                "Ref": "DataBaseSecurityGroup"
-            },
-            "Export": {
-                "Name": "DataBaseSG"
-            }
+    "BastionSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "-",
+        "SecurityGroupIngress": [],
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
         },
-        "ServerSecurityGroup": {
-            "Value": {
-                "Ref": "ServerSecurityGroup"
-            },
-            "Export": {
-                "Name": "ServerSG"
-            }
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BastionSecurityGroup"
+          }
+        ]
+      }
+    },
+    "ServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for server instances",
+        "SecurityGroupIngress": [],
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
         },
-        "BastionSecurityGroup": {
-            "Value": {
-                "Ref": "BastionSecurityGroup"
-            },
-            "Export": {
-                "Name": "BastionSG"
-            }
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ServerSecurityGroup"
+          }
+        ]
+      }
+    },
+    "DataBaseSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for rds/cache/dynamo/aurora instances",
+        "SecurityGroupIngress": [],
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
         },
-        "LoadBalancerSecurityGroup": {
-            "Value": {
-                "Ref": "LoadBalancerSecurityGroup"
-            },
-            "Export": {
-                "Name": "LoadBalancerSG"
-            }
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "DataBaseSecurityGroup"
+          }
+        ]
+      }
+    },
+    "BastionOutboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "BastionSecurityGroup"
+        },
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "BastionInboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "BastionSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "BastionInboundRule2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "BastionSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupId": {
+          "Ref": "DataBaseSecurityGroup"
         }
+      }
+    },
+
+    "BastionInboundRule3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "BastionSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "6379",
+        "ToPort": "6379",
+        "SourceSecurityGroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        }
+      }
+    },
+    "ServerInboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "SourceSecurityGroupId": {
+          "Ref": "BastionSecurityGroup"
+        }
+      }
+    },
+    "ServerInboundRule2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        }
+      }
+    },
+    "ServerInboundRule3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "SourceSecurityGroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        }
+      }
+    },
+    "ServerInboundRule4": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "SourceSecurityGroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        }
+      }
+    },
+    "ServerInboundRule5": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "6379",
+        "ToPort": "6379",
+        "SourceSecurityGroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        }
+      }
+    },
+    "ServerOutboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ServerSecurityGroup"
+        },
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "DatabaseInboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "SourceSecurityGroupId": {
+          "Ref": "BastionSecurityGroup"
+        }
+      }
+    },
+    "DatabaseInboundRule2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupId": {
+          "Ref": "ServerSecurityGroup"
+        }
+      }
+    },
+    "DatabaseInboundRule3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupId": {
+          "Ref": "BastionSecurityGroup"
+        }
+      }
+    },
+    "DatabaseInboundRule4": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "6379",
+        "ToPort": "6379",
+        "SourceSecurityGroupId": {
+          "Ref": "ServerSecurityGroup"
+        }
+      }
+    },
+    "DatabaseInboundRule5": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "6379",
+        "ToPort": "6379",
+        "SourceSecurityGroupId": {
+          "Ref": "BastionSecurityGroup"
+        }
+      }
+    },
+    "DatabaseOutboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DataBaseSecurityGroup"
+        },
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "LBOutboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupId": {
+          "Ref": "ServerSecurityGroup"
+        }
+      }
+    },
+    "LBInboundRule1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "LBInboundRule2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "NACLPublicA1": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPublicA1"
+          }
+        ]
+      }
+    },
+    "NACLPublicA1SubnetAsoc":{
+        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+        "Properties" : {
+            "NetworkAclId" : 
+            { "Ref": "NACLPublicA1" }
+            ,
+            "SubnetId" : {
+                "Fn::ImportValue": "PublicA"
+              }
+          }
+      },      
+
+    "NACLPublicA1Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA1" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPublicA1Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA1" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 443,
+          "To": 443
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPublicA1Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA1" },
+        "CidrBlock": "10.0.2.0/24",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPublicA1Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicA1" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPublicB1": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPublicB1"
+          }
+        ]
+      }
+    },
+    "NACLPublicB1SubnetAsoc":{
+        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+        "Properties" : {
+            "NetworkAclId" : 
+            { "Ref": "NACLPublicB1" }
+            ,
+            "SubnetId" : {
+                "Fn::ImportValue": "PublicB"
+              }
+          }
+      }, 
+    "NACLPublicB1Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB1" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPublicB1Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB1" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 443,
+          "To": 443
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPublicB1Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB1" },
+        "CidrBlock": "10.0.6.0/24",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPublicB1Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB1" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPublicB2": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "NACLPublicAB2"
+          }
+        ]
+      }
+    },
+    "NACLPublicB2SubnetAsoc":{
+        "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+        "Properties" : {
+            "NetworkAclId" : 
+            { "Ref": "NACLPublicB2" }
+            ,
+            "SubnetId" : {
+                "Fn::ImportValue": "Public2B"
+              }
+          }
+      }, 
+    "NACLPublicB2Inbound10": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 80,
+          "To": 80
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 10
+      }
+    },
+    "NACLPublicB2Inbound20": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "PortRange": {
+          "From": 443,
+          "To": 443
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 20
+      }
+    },
+    "NACLPublicB2Inbound30": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "10.0.7.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 30
+      }
+    },
+    "NACLPublicB2Inbound40": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "10.0.8.0/24",
+        "PortRange": {
+          "From": 5432,
+          "To": 5432
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 40
+      }
+    },
+
+    "NACLPublicB2Inbound50": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "10.0.8.0/24",
+        "Protocol": 6,
+        "PortRange": {
+          "From": 6379,
+          "To": 6379
+        },
+        "RuleAction": "allow",
+        "RuleNumber": 50
+      }
+    },
+    "NACLPublicB2Inbound60": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "10.0.9.0/24",
+        "PortRange": {
+          "From": 22,
+          "To": 22
+        },
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "RuleNumber": 60
+      }
+    },
+
+    "NACLPublicB2Inbound70": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "10.0.1.0/24",
+
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 70
+      }
+    },
+    "NACLPublicB2Outbound100": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NACLPublicB2" },
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": -1,
+        "RuleAction": "allow",
+        "RuleNumber": 100,
+        "Egress": true
+      }
+    },
+    "NACLPublicA2": {
+        "Type": "AWS::EC2::NetworkAcl",
+        "Properties": {
+          "VpcId": {
+            "Fn::ImportValue": "VPCID"
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "NACLPublicA2"
+            }
+          ]
+        }
+      },
+      "NACLPublicA2SubnetAsoc":{
+          "Type" : "AWS::EC2::SubnetNetworkAclAssociation",
+          "Properties" : {
+              "NetworkAclId" : 
+              { "Ref": "NACLPublicA2" }
+              ,
+              "SubnetId" : {
+                  "Fn::ImportValue": "Public2A"
+                }
+            }
+        }, 
+      "NACLPublicA2Inbound10": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "0.0.0.0/0",
+          "PortRange": {
+            "From": 80,
+            "To": 80
+          },
+          "Protocol": 6,
+          "RuleAction": "allow",
+          "RuleNumber": 10
+        }
+      },
+      "NACLPublicA2Inbound20": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "0.0.0.0/0",
+          "PortRange": {
+            "From": 443,
+            "To": 443
+          },
+          "Protocol": 6,
+          "RuleAction": "allow",
+          "RuleNumber": 20
+        }
+      },
+      "NACLPublicA2Inbound30": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "10.0.2.0/24",
+          "PortRange": {
+            "From": 22,
+            "To": 22
+          },
+          "Protocol": 6,
+          "RuleAction": "allow",
+          "RuleNumber": 30
+        }
+      },
+      "NACLPublicA2Inbound40": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "10.0.3.0/24",
+          "PortRange": {
+            "From": 5432,
+            "To": 5432
+          },
+          "Protocol": 6,
+          "RuleAction": "allow",
+          "RuleNumber": 40
+        }
+      },
+  
+      "NACLPublicA2Inbound50": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "10.0.3.0/24",
+          "Protocol": 6,
+          "PortRange": {
+            "From": 6379,
+            "To": 6379
+          },
+          "RuleAction": "allow",
+          "RuleNumber": 50
+        }
+      },
+      "NACLPublicA2Inbound60": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "10.0.4.0/24",
+          "PortRange": {
+            "From": 22,
+            "To": 22
+          },
+          "Protocol": 6,
+          "RuleAction": "allow",
+          "RuleNumber": 60
+        }
+      },
+  
+      "NACLPublicA2Inbound70": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "10.0.6.0/24",
+  
+          "Protocol": -1,
+          "RuleAction": "allow",
+          "RuleNumber": 70
+        }
+      },
+      "NACLPublicA2Outbound100": {
+        "Type": "AWS::EC2::NetworkAclEntry",
+        "Properties": {
+          "NetworkAclId": { "Ref": "NACLPublicA2" },
+          "CidrBlock": "0.0.0.0/0",
+          "Protocol": -1,
+          "RuleAction": "allow",
+          "RuleNumber": 100,
+          "Egress": true
+        }
+      }
+  },
+  "Outputs": {
+    "DataBaseSecurityGroup": {
+      "Value": {
+        "Ref": "DataBaseSecurityGroup"
+      },
+      "Export": {
+        "Name": "DataBaseSG"
+      }
+    },
+    "ServerSecurityGroup": {
+      "Value": {
+        "Ref": "ServerSecurityGroup"
+      },
+      "Export": {
+        "Name": "ServerSG"
+      }
+    },
+    "BastionSecurityGroup": {
+      "Value": {
+        "Ref": "BastionSecurityGroup"
+      },
+      "Export": {
+        "Name": "BastionSG"
+      }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Value": {
+        "Ref": "LoadBalancerSecurityGroup"
+      },
+      "Export": {
+        "Name": "LoadBalancerSG"
+      }
     }
+  }
 }
