@@ -58,10 +58,10 @@
         "HealthCheckType": "EC2",
         "VPCZoneIdentifier": [
           {
-            "Fn::ImportValue": "Public2A"
+            "Fn::ImportValue": "SbntpublicA2"
           },
           {
-            "Fn::ImportValue": "Public2B"
+            "Fn::ImportValue": "SbntpublicB2"
           }
         ]
       }
@@ -108,7 +108,6 @@
                 "\n",
                 [
                   "#!/bin/bash",
-                  "exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1",
                   "echo preparing eip conector",
                   "export AWS_DEFAULT_REGION=us-east-1",
                   "INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)",

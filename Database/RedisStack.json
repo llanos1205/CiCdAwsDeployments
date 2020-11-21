@@ -42,10 +42,10 @@
             "Properties": {
                 "Description": "",
                 "SubnetIds": [ {
-                  "Fn::ImportValue": "DBA"
+                  "Fn::ImportValue": "SbntprivateA2"
                 },
                 {
-                  "Fn::ImportValue": "DBB"
+                  "Fn::ImportValue": "SbntprivateB2"
                 }
                  ]
             }

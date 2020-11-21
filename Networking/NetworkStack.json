@@ -8,34 +8,34 @@
       "VPC": {
         "CIDR": "10.0.0.0/16"
       },
-      "PublicSubnetA": {
+      "SbntpublicA1": {
         "CIDR": "10.0.0.0/24"
       },
-      "PublicSubnetB": {
+      "SbntpublicB1": {
         "CIDR": "10.0.1.0/24"
       },
-      "PublicSubnet2A": {
+      "SbntpublicA2": {
         "CIDR": "10.0.2.0/24"
       },
-      "PublicSubnet2B": {
+      "SbntpublicB2": {
         "CIDR": "10.0.3.0/24"
       },
-      "PrivateSubnetA": {
+      "SbntprivateA1": {
         "CIDR": "10.0.4.0/24"
       },
-      "PrivateSubnetB": {
-        "CIDR": "10.0.5.0/24"
-      },
-      "DBPrivateSubentA": {
+      "SbntprivateA2": {
         "CIDR": "10.0.6.0/24"
       },
-      "DBPrivateSubentB": {
-        "CIDR": "10.0.7.0/24"
-      },
-      "PrivateSubnet2A": {
+      "SbntprivateA3": {
         "CIDR": "10.0.8.0/24"
       },
-      "PrivateSubnet2B": {
+      "SbntprivateB1": {
+        "CIDR": "10.0.5.0/24"
+      },
+      "SbntprivateB2": {
+        "CIDR": "10.0.7.0/24"
+      },
+      "SbntprivateB3": {
         "CIDR": "10.0.9.0/24"
       }
     }
@@ -72,7 +72,7 @@
         ]
       }
     },
-    "PublicA": {
+    "SbntpublicA1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -82,7 +82,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PublicSubnetA",
+            "SbntpublicA1",
             "CIDR"
           ]
         },
@@ -107,12 +107,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PublicSubnetA"
+            "Value": "SbntpublicA1"
           }
         ]
       }
     },
-    "PublicB": {
+    "SbntpublicB1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -122,7 +122,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PublicSubnetB",
+            "SbntpublicB1",
             "CIDR"
           ]
         },
@@ -147,12 +147,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PublicSubnetB"
+            "Value": "SbntpublicB1"
           }
         ]
       }
     },
-    "Public2A": {
+    "SbntpublicA2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -162,7 +162,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PublicSubnet2A",
+            "SbntpublicA2",
             "CIDR"
           ]
         },
@@ -187,12 +187,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PublicSubnet2A"
+            "Value": "SbntpublicA2"
           }
         ]
       }
     },
-    "Public2B": {
+    "SbntpublicB2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -202,7 +202,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PublicSubnet2B",
+            "SbntpublicB2",
             "CIDR"
           ]
         },
@@ -227,12 +227,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PublicSubnet2B"
+            "Value": "SbntpublicB2"
           }
         ]
       }
     },
-    "PrivateA": {
+    "SbntprivateA1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -241,7 +241,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PrivateSubnetA",
+            "SbntprivateA1",
             "CIDR"
           ]
         },
@@ -266,12 +266,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateSubnetA"
+            "Value": "SbntprivateA1"
           }
         ]
       }
     },
-    "PrivateB": {
+    "SbntprivateB1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -280,7 +280,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PrivateSubnetB",
+            "SbntprivateB1",
             "CIDR"
           ]
         },
@@ -305,12 +305,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateSubnetB"
+            "Value": "SbntprivateB1"
           }
         ]
       }
     },
-    "Private2A": {
+    "SbntprivateA2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -319,7 +319,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PrivateSubnet2A",
+            "SbntprivateA2",
             "CIDR"
           ]
         },
@@ -344,12 +344,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateSubnet2A"
+            "Value": "SbntprivateA2"
           }
         ]
       }
     },
-    "Private2B": {
+    "SbntprivateB2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -358,7 +358,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "PrivateSubnet2B",
+            "SbntprivateB2",
             "CIDR"
           ]
         },
@@ -383,12 +383,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateSubnet2B"
+            "Value": "SbntprivateB2"
           }
         ]
       }
     },
-    "DBA": {
+    "SbntprivateA3": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -397,7 +397,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "DBPrivateSubentA",
+            "SbntprivateA3",
             "CIDR"
           ]
         },
@@ -422,12 +422,12 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateDBSubnetA"
+            "Value": "SbntprivateA3"
           }
         ]
       }
     },
-    "DBB": {
+    "SbntprivateB3": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
@@ -436,7 +436,7 @@
         "CidrBlock": {
           "Fn::FindInMap": [
             "SubnetConfig",
-            "DBPrivateSubentB",
+            "SbntprivateB3",
             "CIDR"
           ]
         },
@@ -461,7 +461,7 @@
           },
           {
             "Key": "Name",
-            "Value": "PrivateDBSubnetB"
+            "Value": "SbntprivateB3"
           }
         ]
       }
@@ -618,7 +618,7 @@
           ]
         },
         "SubnetId": {
-          "Ref": "PublicA"
+          "Ref": "SbntpublicA1"
         },
         "Tags": [
           {
@@ -639,7 +639,7 @@
           ]
         },
         "SubnetId": {
-          "Ref": "PublicB"
+          "Ref": "SbntpublicB1"
         },
         "Tags": [
           {
@@ -677,10 +677,10 @@
     },
     "PublicSubnetRouteTableAssociationA": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PublicA",
+      "DependsOn": "SbntpublicA1",
       "Properties": {
         "SubnetId": {
-          "Ref": "PublicA"
+          "Ref": "SbntpublicA1"
         },
         "RouteTableId": {
           "Ref": "PublicRouteTable"
@@ -689,10 +689,10 @@
     },
     "PublicSubnetRouteTableAssociationB": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PublicB",
+      "DependsOn": "SbntpublicB1",
       "Properties": {
         "SubnetId": {
-          "Ref": "PublicB"
+          "Ref": "SbntpublicB1"
         },
         "RouteTableId": {
           "Ref": "PublicRouteTable"
@@ -701,10 +701,10 @@
     },
     "PublicSubnetRouteTableAssociationA2": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "Public2A",
+      "DependsOn": "SbntpublicA2",
       "Properties": {
         "SubnetId": {
-          "Ref": "Public2A"
+          "Ref": "SbntpublicA2"
         },
         "RouteTableId": {
           "Ref": "PublicRouteTable"
@@ -713,10 +713,10 @@
     },
     "PublicSubnetRouteTableAssociationB2": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "Public2B",
+      "DependsOn": "SbntpublicB2",
       "Properties": {
         "SubnetId": {
-          "Ref": "Public2B"
+          "Ref": "SbntpublicB2"
         },
         "RouteTableId": {
           "Ref": "PublicRouteTable"
@@ -725,10 +725,10 @@
     },
     "PrivateSubnetRouteTableAssociationA1": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PrivateA",
+      "DependsOn": "SbntprivateA1",
       "Properties": {
         "SubnetId": {
-          "Ref": "PrivateA"
+          "Ref": "SbntprivateA1"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableA"
@@ -737,10 +737,10 @@
     },
     "PrivateSubnetRouteTableAssociationB1": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PrivateB",
+      "DependsOn": "SbntprivateB1",
       "Properties": {
         "SubnetId": {
-          "Ref": "PrivateB"
+          "Ref": "SbntprivateB1"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableB"
@@ -749,10 +749,10 @@
     },
     "PrivateSubnetRouteTableAssociationA2": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PrivateA",
+      "DependsOn": "SbntprivateA2",
       "Properties": {
         "SubnetId": {
-          "Ref": "Private2A"
+          "Ref": "SbntprivateA2"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableA"
@@ -761,10 +761,10 @@
     },
     "PrivateSubnetRouteTableAssociationB2": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "PrivateB",
+      "DependsOn": "SbntprivateB2",
       "Properties": {
         "SubnetId": {
-          "Ref": "Private2B"
+          "Ref": "SbntprivateB2"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableB"
@@ -773,10 +773,10 @@
     },
     "PrivateSubnetRouteTableAssociationDBA": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "DBA",
+      "DependsOn": "SbntprivateA3",
       "Properties": {
         "SubnetId": {
-          "Ref": "DBA"
+          "Ref": "SbntprivateA3"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableA"
@@ -785,10 +785,10 @@
     },
     "PrivateSubnetRouteTableAssociationDBB": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "DependsOn": "DBB",
+      "DependsOn": "SbntprivateB3",
       "Properties": {
         "SubnetId": {
-          "Ref": "DBB"
+          "Ref": "SbntprivateB3"
         },
         "RouteTableId": {
           "Ref": "PrivateRouteTableB"
@@ -805,84 +805,84 @@
         "Name": "VPCID"
       }
     },
-    "PublicA": {
+    "SbntpublicA1": {
       "Value": {
-        "Ref": "PublicA"
+        "Ref": "SbntpublicA1"
       },
       "Export": {
-        "Name": "PublicA"
+        "Name": "SbntpublicA1"
       }
     },
-    "PublicB": {
+    "SbntpublicB1": {
       "Value": {
-        "Ref": "PublicB"
+        "Ref": "SbntpublicB1"
       },
       "Export": {
-        "Name": "PublicB"
+        "Name": "SbntpublicB1"
       }
     },
-    "Public2A": {
+    "SbntpublicA2": {
       "Value": {
-        "Ref": "Public2A"
+        "Ref": "SbntpublicA2"
       },
       "Export": {
-        "Name": "Public2A"
+        "Name": "SbntpublicA2"
       }
     },
-    "Public2B": {
+    "SbntpublicB2": {
       "Value": {
-        "Ref": "Public2B"
+        "Ref": "SbntpublicB2"
       },
       "Export": {
-        "Name": "Public2B"
+        "Name": "SbntpublicB2"
       }
     },
-    "PrivateA": {
+    "SbntprivateA1": {
       "Value": {
-        "Ref": "PrivateA"
+        "Ref": "SbntprivateA1"
       },
       "Export": {
-        "Name": "PrivateA"
+        "Name": "SbntprivateA1"
       }
     },
-    "PrivateB": {
+    "SbntprivateB1": {
       "Value": {
-        "Ref": "PrivateB"
+        "Ref": "SbntprivateB1"
       },
       "Export": {
-        "Name": "PrivateB"
+        "Name": "SbntprivateB1"
       }
     },
-    "Private2A": {
+    "SbntprivateA2": {
       "Value": {
-        "Ref": "Private2A"
+        "Ref": "SbntprivateA2"
       },
       "Export": {
-        "Name": "Private2A"
+        "Name": "SbntprivateA2"
       }
     },
-    "Private2B": {
+    "SbntprivateB2": {
       "Value": {
-        "Ref": "Private2B"
+        "Ref": "SbntprivateB2"
       },
       "Export": {
-        "Name": "Private2B"
+        "Name": "SbntprivateB2"
       }
     },
-    "DBA": {
+    "SbntprivateA3": {
       "Value": {
-        "Ref": "DBA"
+        "Ref": "SbntprivateA3"
       },
       "Export": {
-        "Name": "DBA"
+        "Name": "SbntprivateA3"
       }
     },
-    "DBB": {
+    "SbntprivateB3": {
       "Value": {
-        "Ref": "DBB"
+        "Ref": "SbntprivateB3"
       },
       "Export": {
-        "Name": "DBB"
+        "Name": "SbntprivateB3"
       }
     },
     "EIPA": {
