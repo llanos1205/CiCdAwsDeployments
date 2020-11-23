@@ -6,38 +6,84 @@
   "Mappings": {},
   "Conditions": {},
   "Resources": {
-    "GreenDistribution": {
-      "Type": "AWS::CloudFront::Distribution",
-      "Properties": {
-        "DistributionConfig": []
-      }
-    },
-
     "BlueDistribution": {
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
-        "DistributionConfig": [
-          {
-            "Comment": "Blue dist",
-
-            "Enabled": true,
-            "HttpVersion": "http2",
-            "IPV6Enabled": false,
-
-            "Origins": [
-              {
-                "ConnectionAttempts": 1,
-                "ConnectionTimeout": 5,
-                "DomainName": { "Fn::ImportValue": "S3WebsiteURL" },
-                "CustomOriginConfig": {
-                  "OriginProtocolPolicy": "http-only"
-                },
-                "Id": "Id"
-              }
-            ],
-            "PriceClass": "PriceClass_All"
-          }
-        ]
+        "DistributionConfig": {
+          "Comment": "Blue dist",
+          "DefaultCacheBehavior": {
+            "AllowedMethods": ["GET", "HEAD"],
+            "CachedMethods": ["GET", "HEAD"],
+            "TargetOriginId": "IdBlue",
+            "ViewerProtocolPolicy": "allow-all",
+            "ForwardedValues": {
+              "QueryString": "false",
+              "Cookies": { "Forward": "none" }
+            }
+          },
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": false,
+          "DefaultRootObject": "index.html",
+          "Origins": [
+            {
+              "ConnectionAttempts": 1,
+              "ConnectionTimeout": 5,
+              "OriginPath": "/Blue",
+              "DomainName": {
+                "Fn::Select": [
+                  1,
+                  { "Fn::Split": ["//", { "Fn::ImportValue": "S3WebsiteURL" }] }
+                ]
+              },
+              "CustomOriginConfig": {
+                "OriginProtocolPolicy": "http-only"
+              },
+              "Id": "IdBlue"
+            }
+          ],
+          "PriceClass": "PriceClass_All"
+        }
+      }
+    },
+    "GreenDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Comment": "Green dist",
+          "DefaultCacheBehavior": {
+            "AllowedMethods": ["GET", "HEAD"],
+            "CachedMethods": ["GET", "HEAD"],
+            "TargetOriginId": "IdGreen",
+            "ViewerProtocolPolicy": "allow-all",
+            "ForwardedValues": {
+              "QueryString": "false",
+              "Cookies": { "Forward": "none" }
+            }
+          },
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": false,
+          "DefaultRootObject": "index.html",
+          "Origins": [
+            {
+              "ConnectionAttempts": 1,
+              "ConnectionTimeout": 5,
+              "OriginPath": "/Green",
+              "DomainName": {
+                "Fn::Select": [
+                  1,
+                  { "Fn::Split": ["//", { "Fn::ImportValue": "S3WebsiteURL" }] }
+                ]
+              },
+              "CustomOriginConfig": {
+                "OriginProtocolPolicy": "http-only"
+              },
+              "Id": "IdGreen"
+            }
+          ],
+          "PriceClass": "PriceClass_All"
+        }
       }
     }
   },
