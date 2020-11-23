@@ -55,10 +55,33 @@ This project requires order when building the architecture as each template depe
 ### S3Stack
     This stack creates a S3 static webhosting bucket,for it to hold all the static files from the react application (frontend)
 ### S3CodePipelineStack
-    This stack createsa pipeline  for the react application to be deployed in the s3 bucket
+    This stack createsa pipeline  for the react application to be deployed in the s3 bucket, 
+    note the s3 bucket is private as all content is retrieved by clodufront
+    the bucket structure is like this:
+        -bucket/
+            -Green/
+                ...
+                ...
+                index.html
+                ...
+            -Blue/
+                ...
+                ...
+                index.html
+                ...
+            version.json
+    as you may noticed there are 2 folders to apply blue/green depoyment, each folder is a origin for a diferent CloudFront origin, and there is a version.json file which states what version has each origin, so the codebuild project deploys in the folder with the older version.
+        {
+            "Blue":"v1.0.0",
+            "Green":"v1.0.1"
+        }
+
 * pulls code from github
 * builds node to create a bundle.zip
 * extract that bundle to the bucket
+### CloduFrontStack
+    This stack creates 2 distributions of cloud front to apply Blue/Green deployment to s3 webhosting, each distribution points to a diferente origin
+    
 ### FargateCodePipelineStack
     This stack creates a pipeline that deploys the django services (one by now as others micro services still in creation)
 
