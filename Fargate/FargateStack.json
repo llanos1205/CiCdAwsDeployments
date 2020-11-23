@@ -340,6 +340,16 @@
     }
   },
   "Outputs": {
+    
+    "LoadBalancerDNS" : {
+      "Value" : 
+      { "Fn::GetAtt" : [ "CerberoLoadBalancer", "DNSName" ]},
+      "Export": {
+        "Name": "FargateLoadBalancerDNS"
+      }
+      
+    },
+    
     "LoadBalancerID": {
       "Value": {
         "Ref": "CerberoLoadBalancer"

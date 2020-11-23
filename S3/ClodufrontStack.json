@@ -1,41 +1,45 @@
 {
-"AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "",
-    "Metadata": {
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "GreenDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": []
+      }
+    },
 
-    },
-    "Parameters": {
-    
-    },
-    "Mappings": {
+    "BlueDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": [
+          {
+            "Comment": "Blue dist",
 
-    },
-    "Conditions": {
+            "Enabled": true,
+            "HttpVersion": "http2",
+            "IPV6Enabled": false,
 
-    },
-    "Resources": {
-        
-        "GreenDistribution": {
-           "Type": "AWS::CloudFront::Distribution",
-           "Properties": {
-              "DistributionConfig": [
-                  
-              ]
-           }
-        },
-        
-        "BlueDistribution": {
-           "Type": "AWS::CloudFront::Distribution",
-           "Properties": {
-              "DistributionConfig": [
-                  
-              ]
-           }
-        }
-        
-        
-    },
-    "Outputs": {
-
+            "Origins": [
+              {
+                "ConnectionAttempts": 1,
+                "ConnectionTimeout": 5,
+                "DomainName": { "Fn::ImportValue": "S3WebsiteURL" },
+                "CustomOriginConfig": {
+                  "OriginProtocolPolicy": "http-only"
+                },
+                "Id": "Id"
+              }
+            ],
+            "PriceClass": "PriceClass_All"
+          }
+        ]
+      }
     }
+  },
+  "Outputs": {}
 }

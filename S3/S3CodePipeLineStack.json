@@ -166,7 +166,18 @@
                 "Environment": {
                     "Type": "LINUX_CONTAINER",
                     "ComputeType": "BUILD_GENERAL1_SMALL",
-                    "Image": "aws/codebuild/standard:4.0-20.03.13"
+                    "Image": "aws/codebuild/standard:4.0-20.03.13",
+                    "EnvironmentVariables" : [ 
+                        {
+                            "Name" : "MainUrl",
+                            "Type" : "PLAINTEXT",
+                            "Value" : 
+                            {  "Fn::ImportValue": "FargateLoadBalancerDNS" }
+                            
+                          }
+                          
+                     ]
+  
                 },
                 "Name": "BuildReact",
                 "Description": "uses buildspec to create a deployment.zip from bundle",
