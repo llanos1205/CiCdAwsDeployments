@@ -8,10 +8,7 @@
           "Label": {
             "default": "EC2 config"
           },
-          "Parameters": [
-            "BastionAMIId",
-            "BastionPemKeyId"
-          ]
+          "Parameters": ["BastionAMIId", "BastionPemKeyId"]
         }
       ]
     }
@@ -70,9 +67,7 @@
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "Path": "/",
-        "Roles": [
-          "BastionRole"
-        ]
+        "Roles": ["BastionRole"]
       }
     },
     "BastionlaunchTemplate": {
@@ -86,10 +81,7 @@
           "InstanceInitiatedShutdownBehavior": "terminate",
           "IamInstanceProfile": {
             "Arn": {
-              "Fn::GetAtt": [
-                "BastioniamInstanceProfile",
-                "Arn"
-              ]
+              "Fn::GetAtt": ["BastioniamInstanceProfile", "Arn"]
             }
           },
           "InstanceType": "t3.micro",
@@ -116,10 +108,7 @@
                       "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id=${EIP} --allow-reassociation",
                       {
                         "EIP": {
-                          "Fn::GetAtt": [
-                            "BastionEIP",
-                            "AllocationId"
-                          ]
+                          "Fn::GetAtt": ["BastionEIP", "AllocationId"]
                         }
                       }
                     ]
@@ -136,7 +125,20 @@
                   "echo preparing postgresql",
                   "sudo yum -y install postgresql-server postgresql-contrib",
                   "sudo postgresql-setup initdb",
-                  "sudo systemctl start postgresql"
+                  "sudo systemctl start postgresql",
+                  "sudo yum -y install jq",
+                  "pguser=$(aws secretsmanager get-secret-value --secret-id RDSUser | jq -r '.SecretString')",
+                  "pgpass=$(aws secretsmanager get-secret-value --secret-id RDSPass | jq -r '.SecretString')",
+                  {
+                    "Fn::Sub": [
+                      "psql postgres://$pguser:$pgpass@${RDSHOST}:5432 -c 'CREATE DATABASE \"Client_Template\"'",
+                      {
+                        "RDSHOST": {
+                          "Fn::ImportValue": "RDSendpoint"
+                        }
+                      }
+                    ]
+                  }
                 ]
               ]
             }

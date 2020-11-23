@@ -4,21 +4,16 @@
   "Metadata": {
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
-        
         {
           "Label": {
             "default": "Database Configuration"
           },
-          "Parameters": [
-            "MasterUserPassword",
-            "MasterUsername"
-          ]
+          "Parameters": ["MasterUserPassword", "MasterUsername"]
         }
       ]
     }
   },
   "Parameters": {
-   
     "MasterUserPassword": {
       "Description": "-",
       "Type": "String",
@@ -78,27 +73,51 @@
           }
         ]
       }
+    },
+    "secretRDSUsername": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "Description": "dbusername",
+
+        "Name": "RDSUser",
+        "SecretString": { "Ref": "MasterUsername" }
+      }
+    },
+    "secretRDSUPass": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "Description": "dbpass",
+
+        "Name": "RDSPass",
+        "SecretString": { "Ref": "MasterUserPassword" }
+      }
     }
   },
   "Outputs": {
-    
-    "rdsDBSubnetGroup" : {
-      "Value" : 
-      { "Ref": "rdsDBSubnetGroup" }
-      
+    "rdsDBSubnetGroup": {
+      "Value": { "Ref": "rdsDBSubnetGroup" }
     },
-    "rdsDBInstance" : {
-      "Value" : 
-      { "Ref": "rdsDBInstance" }
-      
+    "rdsDBInstance": {
+      "Value": { "Ref": "rdsDBInstance" }
     },
-    "rdsendpoint" : {
-      "Value" : 
-      { "Fn::GetAtt" : [ "rdsDBInstance", "Endpoint.Address" ]}
-      
-      
+    "rdsendpoint": {
+      "Value": { "Fn::GetAtt": ["rdsDBInstance", "Endpoint.Address"] },
+
+      "Export": {
+        "Name": "RDSendpoint"
+      }
+    },
+    "rdsusersecret": {
+      "Value": { "Ref": "secretRDSUsername" },
+      "Export": {
+        "Name": "rdsusersecret"
+      }
+    },
+    "rdsuserpass": {
+      "Value": { "Ref": "secretRDSUPass" },
+      "Export": {
+        "Name": "rdsuserpass"
+      }
     }
-    
-    
   }
 }

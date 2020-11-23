@@ -70,7 +70,15 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Action": "ec2:AssociateAddress",
+              "Action": [
+                "secretsmanager:GetRandomPassword",
+                "secretsmanager:GetResourcePolicy",
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+                "ec2:AssociateAddress",
+                "secretsmanager:ListSecretVersionIds",
+                "secretsmanager:ListSecrets"
+            ],
               "Resource": "*"
             }
           ]

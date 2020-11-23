@@ -29,7 +29,7 @@
             "Type": "AWS::S3::BucketPolicy",
             "Properties": {
                 "Bucket": {
-                    "Ref": "s3Bucket"
+                    "Ref": "WebBucket"
                 },
                 "PolicyDocument": {
                     "Version": "2012-10-17",
@@ -41,7 +41,7 @@
                             "Action": [
                                 "s3:GetObject"
                             ],
-                            "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "WebBucket" } , "/*" ]]}
+                            "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Name" } , "/*" ]]}
                         }
                     ]
                 }
@@ -52,7 +52,7 @@
         "WebsiteURL": {
             "Value": {
                 "Fn::GetAtt": [
-                    "s3Bucket",
+                    "WebBucket",
                     "WebsiteURL"
                 ]
             },
