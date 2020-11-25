@@ -96,7 +96,7 @@
               {
                 "Name": "DB_HOST",
                 "Value": {
-                  "Ref": "DBHOST"
+                  "Fn::ImportValue": "RDSendpoint"
                 }
               },
               {
@@ -190,10 +190,10 @@
             "AssignPublicIp": "DISABLED",
             "Subnets": [
               {
-                "Fn::ImportValue": "PrivateA"
+                "Fn::ImportValue": "SbntprivateA1"
               },
               {
-                "Fn::ImportValue": "PrivateB"
+                "Fn::ImportValue": "SbntprivateB1"
               }
             ],
             "SecurityGroups": [
@@ -234,22 +234,22 @@
       }
     },
     "CerberoBlueTargetGroup": {
-        "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-        "Properties": {
-          "HealthCheckIntervalSeconds": 100,
-          "HealthCheckPath": "/",
-          "HealthCheckTimeoutSeconds": 50,
-          "HealthyThresholdCount": 2,
-          "UnhealthyThresholdCount": 2,
-          "Name": "CerberoBlueTargetGroup",
-          "Port": { "Ref": "ImagePort" },
-          "Protocol": "HTTP",
-          "TargetType": "ip",
-          "VpcId": {
-            "Fn::ImportValue": "VPCID"
-          }
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "HealthCheckIntervalSeconds": 100,
+        "HealthCheckPath": "/",
+        "HealthCheckTimeoutSeconds": 50,
+        "HealthyThresholdCount": 2,
+        "UnhealthyThresholdCount": 2,
+        "Name": "CerberoBlueTargetGroup",
+        "Port": { "Ref": "ImagePort" },
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
         }
-      },
+      }
+    },
     "Listenner": {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
       "Properties": {
@@ -280,10 +280,10 @@
         ],
         "Subnets": [
           {
-            "Fn::ImportValue": "Public2A"
+            "Fn::ImportValue": "SbntpublicA1"
           },
           {
-            "Fn::ImportValue": "Public2B"
+            "Fn::ImportValue": "SbntpublicB1"
           }
         ]
       }
@@ -340,34 +340,50 @@
     }
   },
   "Outputs": {
-    
-    "LoadBalancerDNS" : {
-      "Value" : 
-      { "Fn::GetAtt" : [ "CerberoLoadBalancer", "DNSName" ]},
+    "LoadBalancerDNS": {
+      "Value": { "Fn::GetAtt": ["CerberoLoadBalancer", "DNSName"] },
       "Export": {
         "Name": "FargateLoadBalancerDNS"
       }
-      
     },
-    
+
     "LoadBalancerID": {
       "Value": {
         "Ref": "CerberoLoadBalancer"
       }
     },
+
+    "AutoScalingTarget": {
+      "Value": { "Ref": "AutoScalingTarget" },
+      "Export": {
+        "Name": "AutoScalingTarget"
+      }
+    },
+
     "CerberoGreenTargetGroup": {
       "Value": {
         "Ref": "CerberoGreenTargetGroup"
+      },
+
+      "Export": {
+        "Name": "CerberoGreenTargetGroup"
       }
     },
     "CerberoBlueTargetGroup": {
-        "Value": {
-          "Ref": "CerberoBlueTargetGroup"
-        }
+      "Value": {
+        "Ref": "CerberoBlueTargetGroup"
       },
+      "Export": {
+        "Name": "CerberoBlueTargetGroup"
+      }
+    },
     "CerberoService": {
       "Value": {
         "Ref": "CerberoService"
+      },
+
+      "Export": {
+        "Name": "CerberoService"
       }
     },
     "CerberoTaskDef": {
@@ -378,6 +394,10 @@
     "CerberoCluster": {
       "Value": {
         "Ref": "CerberoCluster"
+      },
+
+      "Export": {
+        "Name": "CerberoCluster"
       }
     }
   }

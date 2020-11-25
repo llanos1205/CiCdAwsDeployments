@@ -78,7 +78,7 @@
                 "ec2:AssociateAddress",
                 "secretsmanager:ListSecretVersionIds",
                 "secretsmanager:ListSecrets"
-            ],
+              ],
               "Resource": "*"
             }
           ]
@@ -259,5 +259,24 @@
       }
     }
   },
-  "Outputs": {}
+  "Outputs": {
+    "CodeBuildRole": {
+      "Value": { "Fn::GetAtt": ["CodeBuildRole", "Arn"] },
+      "Export": {
+        "Name": "CodeBuildRole"
+      }
+    },
+    "CodePipeLineRole": {
+      "Value": { "Fn::GetAtt": ["CodePipeLineRole", "Arn"] },
+      "Export": {
+        "Name": "CodePipeLineRole"
+      }
+    },
+    "BastionRole": {
+      "Value": { "Fn::GetAtt": ["BastionRole", "Arn"] },
+      "Export": {
+        "Name": "BastionRole"
+      }
+    }
+  }
 }

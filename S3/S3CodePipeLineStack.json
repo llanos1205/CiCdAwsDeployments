@@ -1,219 +1,193 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "",
-    "Metadata": {},
-    "Parameters": {
-        "PipeLineName": {
-            "Description": "Name for the code pipeline",
-            "Type": "String",
-            "Default":"testpipe"
-        },
-        "GiHubOwner": {
-            "Description": "Owner",
-            "Type": "String",
-            "Default":"Control-Soft"
-        },
-        "GiHubRepo": {
-            "Description": "Repo name",
-            "Type": "String",
-            "Default":"CerberoFront"
-        },
-        "GiHubBranch": {
-            "Description": "Repo branch",
-            "Type": "String",
-            "Default":"master"
-        },
-        "GiHubToken": {
-            "Description": "acces token for github",
-            "Type": "String",
-            "Default":""
-        }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {
+    "PipeLineName": {
+      "Description": "Name for the code pipeline",
+      "Type": "String",
+      "Default": "testpipe"
     },
-    "Mappings": {},
-    "Conditions": {},
-    "Resources": {
-        "s3Bucket": {
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-                "AccessControl": "PublicRead",
-                "BucketName": "storepipe131451",
-                "VersioningConfiguration": {
-                    "Status": "Enabled"
-                }
-            }
+    "GiHubOwner": {
+      "Description": "Owner",
+      "Type": "String",
+      "Default": "Control-Soft"
+    },
+    "GiHubRepo": {
+      "Description": "Repo name",
+      "Type": "String",
+      "Default": "CerberoFront"
+    },
+    "GiHubBranch": {
+      "Description": "Repo branch",
+      "Type": "String",
+      "Default": "master"
+    },
+    "GiHubToken": {
+      "Description": "acces token for github",
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "s3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicRead",
+        "BucketName": "storepipe131451",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
+    "PipeLine": {
+      "Type": "AWS::CodePipeline::Pipeline",
+      "Properties": {
+        "ArtifactStore": {
+          "Type": "S3",
+          "Location": {
+            "Ref": "s3Bucket"
+          }
         },
-        "PipeLine": {
-            "Type": "AWS::CodePipeline::Pipeline",
-            "Properties": {
-                "ArtifactStore": {
-                    "Type": "S3",
-                    "Location": {
-                        "Ref": "s3Bucket"
-                    }
-                },
-                "RoleArn": "arn:aws:iam::863404411791:role/PipeLineRoleGeneric",
-                "DisableInboundStageTransitions": [],
-                "Name": {
-                    "Ref": "PipeLineName"
-                },
-                "RestartExecutionOnUpdate": true,
-                "Stages": [
-                    {
-                        "Name": "Source",
-                        "Actions": [
-                            {
-                                "ActionTypeId": {
-                                    "Category": "Source",
-                                    "Owner": "ThirdParty",
-                                    "Version": "1",
-                                    "Provider": "GitHub"
-                                },
-                                "Configuration": {
-                                    "Owner": {
-                                        "Ref": "GiHubOwner"
-                                    },
-                                    "Repo": {
-                                        "Ref": "GiHubRepo"
-                                    },
-                                    "Branch": {
-                                        "Ref": "GiHubBranch"
-                                    },
-                                    "OAuthToken": {
-                                        "Ref": "GiHubToken"
-                                    },
-                                    "PollForSourceChanges": true
-                                },
-                                "Name": "SourceAction",
-                                "OutputArtifacts": [
-                                    {
-                                        "Name": "staticwebsite"
-                                    }
-                                ],
-                                "RunOrder": 1
-                            }
-                        ]
-                    },
-                    {
-                        "Name": "Build",
-                        "Actions": [
-                            {
-                                "RunOrder": 1,
-                                "Name": "Build",
-                                "InputArtifacts": [
-                                    {
-                                        "Name": "staticwebsite"
-                                    }
-                                ],
-                                "ActionTypeId": {
-                                    "Category": "Build",
-                                    "Owner": "AWS",
-                                    "Version": "1",
-                                    "Provider": "CodeBuild"
-                                },
-                                "Configuration": {
-                                    "ProjectName": {
-                                        "Ref": "Builder"
-                                    }
-                                },
-                                "OutputArtifacts": [
-                                    {
-                                        "Name": "BuildArtifact"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "Name": "Deploy",
-                        "Actions": [
-                            {
-                                "Name": "Deploy",
-                                "RunOrder": 1,
-                                "InputArtifacts": [
-                                    {
-                                        "Name": "BuildArtifact"
-                                    }
-                                ],
-                                "ActionTypeId": {
-                                    "Category": "Deploy",
-                                    "Owner": "AWS",
-                                    "Version": "1",
-                                    "Provider": "S3"
-                                    
-                                    
-                                    
-                                },
-                                "Configuration": {
-                                    "BucketName": "testweb1314",
-                                    "Extract": "true"
-                             
-                                  }
-                            }
-                        ]
-                    }
-                ]
-            }
+        "RoleArn": {
+          "Fn::ImportValue": "CodePipeLineRole"
         },
-        "Builder": {
-            "Type": "AWS::CodeBuild::Project",
-            "Properties": {
-                "Artifacts": {
-                    "Type": "CODEPIPELINE"
-                },
-                "Source": {
-                    "Type": "CODEPIPELINE"
-                },
-                "Environment": {
-                    "Type": "LINUX_CONTAINER",
-                    "ComputeType": "BUILD_GENERAL1_SMALL",
-                    "Image": "aws/codebuild/standard:4.0-20.03.13",
-                    "EnvironmentVariables" : [ 
-                        {
-                            "Name" : "MainUrl",
-                            "Type" : "PLAINTEXT",
-                            "Value" : 
-                            {  "Fn::ImportValue": "FargateLoadBalancerDNS" }
-                            
-                          }
-                          
-                     ]
-  
-                },
-                "Name": "BuildReact",
-                "Description": "uses buildspec to create a deployment.zip from bundle",
-                "ServiceRole": "arn:aws:iam::863404411791:role/BuildRoleGeneric",
-                "TimeoutInMinutes": 10
-            }
+        "DisableInboundStageTransitions": [],
+        "Name": {
+          "Ref": "PipeLineName"
         },
-        "Webhook": {
-            "Type": "AWS::CodePipeline::Webhook",
-            "Properties": {
-                "AuthenticationConfiguration": {
-                    "SecretToken": {
-                        "Ref": "GiHubToken"
-                    }
+        "RestartExecutionOnUpdate": true,
+        "Stages": [
+          {
+            "Name": "Source",
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Source",
+                  "Owner": "ThirdParty",
+                  "Version": "1",
+                  "Provider": "GitHub"
                 },
-                "Filters": [
-                    {
-                        "JsonPath": "$.ref",
-                        "MatchEquals": "refs/heads/{Branch}"
-                    }
+                "Configuration": {
+                  "Owner": {
+                    "Ref": "GiHubOwner"
+                  },
+                  "Repo": {
+                    "Ref": "GiHubRepo"
+                  },
+                  "Branch": {
+                    "Ref": "GiHubBranch"
+                  },
+                  "OAuthToken": {
+                    "Ref": "GiHubToken"
+                  },
+                  "PollForSourceChanges": true
+                },
+                "Name": "SourceAction",
+                "OutputArtifacts": [
+                  {
+                    "Name": "staticwebsite"
+                  }
                 ],
-                "Authentication": "GITHUB_HMAC",
-                "TargetPipeline": {
-                    "Ref": "PipeLine"
+                "RunOrder": 1
+              }
+            ]
+          },
+          {
+            "Name": "Build",
+            "Actions": [
+              {
+                "RunOrder": 1,
+                "Name": "Build",
+                "InputArtifacts": [
+                  {
+                    "Name": "staticwebsite"
+                  }
+                ],
+                "ActionTypeId": {
+                  "Category": "Build",
+                  "Owner": "AWS",
+                  "Version": "1",
+                  "Provider": "CodeBuild"
                 },
-                "TargetAction": "SourceAction",
-                "Name": "WebHook",
-                "TargetPipelineVersion": {
-                    "Fn::GetAtt": [
-                        "PipeLine",
-                        "Version"
-                    ]
+                "Configuration": {
+                  "ProjectName": {
+                    "Ref": "Builder"
+                  }
                 },
-                "RegisterWithThirdParty": "true"
-            }
-        }
+                "OutputArtifacts": [
+                  {
+                    "Name": "BuildArtifact"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
-    "Outputs": {}
+    "Builder": {
+      "Type": "AWS::CodeBuild::Project",
+      "Properties": {
+        "Artifacts": {
+          "Type": "CODEPIPELINE"
+        },
+        "Source": {
+          "Type": "CODEPIPELINE"
+        },
+        "Environment": {
+          "Type": "LINUX_CONTAINER",
+          "ComputeType": "BUILD_GENERAL1_SMALL",
+          "Image": "aws/codebuild/standard:4.0-20.03.13",
+          "EnvironmentVariables": [
+            {
+              "Name": "BACKURL",
+              "Type": "PLAINTEXT",
+              "Value": "FargateLoadBalancerDNS"
+            },
+            {
+              "Name": "BUCKET",
+              "Type": "PLAINTEXT",
+              "Value": "tests31314"
+            }
+          ]
+        },
+        "Name": "BuildReact",
+        "Description": "uses buildspec to create a deployment.zip from bundle",
+        "ServiceRole": {
+          "Fn::ImportValue": "CodeBuildRole"
+        },
+        "TimeoutInMinutes": 10
+      }
+    },
+    "Webhook": {
+      "Type": "AWS::CodePipeline::Webhook",
+      "Properties": {
+        "AuthenticationConfiguration": {
+          "SecretToken": {
+            "Ref": "GiHubToken"
+          }
+        },
+        "Filters": [
+          {
+            "JsonPath": "$.ref",
+            "MatchEquals": "refs/heads/{Branch}"
+          }
+        ],
+        "Authentication": "GITHUB_HMAC",
+        "TargetPipeline": {
+          "Ref": "PipeLine"
+        },
+        "TargetAction": "SourceAction",
+        "Name": "WebHook",
+        "TargetPipelineVersion": {
+          "Fn::GetAtt": ["PipeLine", "Version"]
+        },
+        "RegisterWithThirdParty": "true"
+      }
+    }
+  },
+  "Outputs": {}
 }

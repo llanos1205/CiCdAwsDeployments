@@ -70,7 +70,10 @@ This project requires order when building the architecture as each template depe
                 index.html
                 ...
             version.json
-    as you may noticed there are 2 folders to apply blue/green deployment, each folder is a origin for a diferent CloudFront distribution, and there is a "version.json" file which states what version has each origin, so the codebuild project deploys in the folder with the older version.
+    as you may noticed there are 2 folders to apply blue/green deployment,
+    each folder is a origin for a diferent CloudFront distribution, 
+    and there is a "version.json" file which states what version has each origin, 
+    so the codebuild project deploys in the folder with the older version.
         {
             "Blue":"v1.0.0",
             "Green":"v1.0.1"
