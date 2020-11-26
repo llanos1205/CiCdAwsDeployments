@@ -794,7 +794,24 @@
           "Ref": "PrivateRouteTableB"
         }
       }
+    },
+    "S3PrivateEndpoint":{
+      "Type" : "AWS::EC2::VPCEndpoint",
+      "Properties" : {
+        
+          "RouteTableIds" : [ 
+          { "Ref": "PublicRouteTable" }
+           ],
+        
+          "ServiceName" : "com.amazonaws.us-east-1.s3",
+          
+          "VpcEndpointType" : "Gateway",
+          "VpcId" : 
+          { "Ref": "VPC" }
+          
+        }
     }
+    
   },
   "Outputs": {
     "VPC": {

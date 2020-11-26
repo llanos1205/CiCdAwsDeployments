@@ -157,23 +157,9 @@
         "GroupId": {
           "Ref": "ServerSecurityGroup"
         },
-        "IpProtocol": "tcp",
-        "FromPort": "80",
-        "ToPort": "80",
-        "SourceSecurityGroupId": {
-          "Ref": "LoadBalancerSecurityGroup"
-        }
-      }
-    },
-    "ServerInboundRule4": {
-      "Type": "AWS::EC2::SecurityGroupIngress",
-      "Properties": {
-        "GroupId": {
-          "Ref": "ServerSecurityGroup"
-        },
-        "IpProtocol": "tcp",
-        "FromPort": "443",
-        "ToPort": "443",
+        "IpProtocol": "-1",
+        "FromPort": "0",
+        "ToPort": "65535",
         "SourceSecurityGroupId": {
           "Ref": "LoadBalancerSecurityGroup"
         }
@@ -296,9 +282,7 @@
         "IpProtocol": "tcp",
         "FromPort": "0",
         "ToPort": "65535",
-        "SourceSecurityGroupId": {
-          "Ref": "ServerSecurityGroup"
-        }
+        "CidrIp": "0.0.0.0/0"
       }
     },
     "LBInboundRule1": {
@@ -323,6 +307,20 @@
         "FromPort": "443",
         "ToPort": "443",
         "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "LBInboundRule3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "LoadBalancerSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "0",
+        "ToPort": "65535",
+        "SourceSecurityGroupId": {
+          "Ref": "ServerSecurityGroup"
+        }
       }
     },
     "NACLPublicA1": {

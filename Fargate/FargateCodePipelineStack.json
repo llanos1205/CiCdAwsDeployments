@@ -172,10 +172,18 @@
         "Source": {
           "Type": "CODEPIPELINE"
         },
+        "LogsConfig": {
+          "CloudWatchLogs": {
+            "GroupName": "buildgroup1314",
+            "Status": "ENABLED",
+            "StreamName": "buildstream1314"
+          }
+        },
         "Environment": {
           "Type": "LINUX_CONTAINER",
           "ComputeType": "BUILD_GENERAL1_SMALL",
-          "Image": "aws/codebuild/standard:4.0-20.03.13",
+          "PrivilegedMode": true,
+          "Image": "aws/codebuild/standard:4.0",
           "EnvironmentVariables": [
             {
               "Name": "DB_USER",

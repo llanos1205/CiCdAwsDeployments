@@ -36,7 +36,7 @@
         "AllowMajorVersionUpgrade": "true",
         "AutoMinorVersionUpgrade": "true",
         "DBInstanceIdentifier": "CerberoDB",
-        "DBName": "CoreDB",
+        "DBName": "PostgresDB",
         "VPCSecurityGroups": [
           {
             "Fn::ImportValue": "DataBaseSG"

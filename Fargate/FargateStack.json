@@ -12,14 +12,20 @@
             "ImagePath",
             "ImagePort",
             "DB_USER",
-            "DB_PASSWORD",
-            "DB_HOST"
+            "DB_PASSWORD"
           ]
         }
       ]
     }
   },
   "Parameters": {
+    
+    "RepoContainerName": {
+        "Description": "-",
+        "Type": "String",
+        "Default": "-"
+    },
+    
     "ImagePath": {
       "Description": "-",
       "Type": "String",
@@ -30,15 +36,10 @@
       "Type": "Number",
       "Default": 8800
     },
-    "DBHOST": {
-      "Description": "-",
-      "Type": "String",
-      "Default": "-"
-    },
     "DBPASSWORD": {
       "Description": "-",
       "Type": "String",
-      "Default": "test1205"
+      "Default": "altair1205"
     },
     "DBUSER": {
       "Description": "-",
@@ -49,6 +50,18 @@
   "Mappings": {},
   "Conditions": {},
   "Resources": {
+    "repository":{
+      "Type" : "AWS::ECR::Repository",
+      "Properties" : {
+         
+          
+         
+          "RepositoryName" : 
+          { "Ref": "RepoContainerName" }
+          
+       
+        }
+    },    
     "CerberoCluster": {
       "Type": "AWS::ECS::Cluster",
       "Properties": {
@@ -298,7 +311,7 @@
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
       "Properties": {
         "MaxCapacity": 3,
-        "MinCapacity": 1,
+        "MinCapacity": 0,
         "ResourceId": {
           "Fn::Join": [
             "/",
