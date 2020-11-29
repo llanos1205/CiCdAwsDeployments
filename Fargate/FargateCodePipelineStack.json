@@ -209,25 +209,8 @@
         "ServiceRole": {
           "Fn::ImportValue": "CodeBuildRole"
         },
-        "TimeoutInMinutes": 5,
-        "VpcConfig": {
-          "SecurityGroupIds": [
-            {
-              "Fn::ImportValue": "BastionSG"
-            }
-          ],
-          "Subnets": [
-            {
-              "Fn::ImportValue": "SbntpublicA2"
-            },
-            {
-              "Fn::ImportValue": "SbntpublicB2"
-            }
-          ],
-          "VpcId": {
-            "Fn::ImportValue": "VPCID"
-          }
-        }
+        "TimeoutInMinutes": 5
+        
       }
     },
     "Webhook": {
@@ -249,7 +232,7 @@
           "Ref": "PipeLine"
         },
         "TargetAction": "SourceAction",
-        "Name": "WebHook",
+        "Name": "WebHookFargate",
         "TargetPipelineVersion": {
           "Fn::GetAtt": ["PipeLine", "Version"]
         },

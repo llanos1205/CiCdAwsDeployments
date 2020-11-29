@@ -12,7 +12,7 @@
         "DistributionConfig": {
           "Comment": "Blue dist",
           "DefaultCacheBehavior": {
-            "AllowedMethods": ["GET", "HEAD"],
+            "AllowedMethods": ["GET", "HEAD","POST","PUT","DELETE","OPTIONS","PATCH"],
             "CachedMethods": ["GET", "HEAD"],
             "TargetOriginId": "IdBlue",
             "ViewerProtocolPolicy": "allow-all",
@@ -25,6 +25,21 @@
           "HttpVersion": "http2",
           "IPV6Enabled": false,
           "DefaultRootObject": "index.html",
+          "CustomErrorResponses" : [ 
+            {
+              "ErrorCachingMinTTL" : 30,
+              "ErrorCode" : 404,
+              "ResponseCode" : 200,
+              "ResponsePagePath" : "/index.html"
+            },
+            {
+              "ErrorCachingMinTTL" : 30,
+              "ErrorCode" : 403,
+              "ResponseCode" : 200,
+              "ResponsePagePath" : "/index.html"
+            }
+            
+           ],
           "Origins": [
             {
               "ConnectionAttempts": 1,
@@ -52,7 +67,7 @@
         "DistributionConfig": {
           "Comment": "Green dist",
           "DefaultCacheBehavior": {
-            "AllowedMethods": ["GET", "HEAD"],
+            "AllowedMethods": ["GET", "HEAD","POST","PUT","DELETE","OPTIONS","PATCH"],
             "CachedMethods": ["GET", "HEAD"],
             "TargetOriginId": "IdGreen",
             "ViewerProtocolPolicy": "allow-all",
@@ -65,6 +80,21 @@
           "HttpVersion": "http2",
           "IPV6Enabled": false,
           "DefaultRootObject": "index.html",
+          "CustomErrorResponses" : [ 
+            {
+              "ErrorCachingMinTTL" : 30,
+              "ErrorCode" : 404,
+              "ResponseCode" : 200,
+              "ResponsePagePath" : "/index.html"
+            },
+            {
+              "ErrorCachingMinTTL" : 30,
+              "ErrorCode" : 403,
+              "ResponseCode" : 200,
+              "ResponsePagePath" : "/index.html"
+            }
+            
+           ],
           "Origins": [
             {
               "ConnectionAttempts": 1,

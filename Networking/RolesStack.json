@@ -202,6 +202,18 @@
                 "cloudwatch:*",
                 "s3:*",
                 "sns:*",
+                "ecs:*",
+            
+                "elasticloadbalancing:DescribeTargetGroups",
+                "elasticloadbalancing:DescribeListeners",
+                "elasticloadbalancing:ModifyListener",
+                "elasticloadbalancing:DescribeRules",
+                "elasticloadbalancing:ModifyRule",
+                "lambda:InvokeFunction",
+                "cloudwatch:DescribeAlarms",
+                "sns:Publish",
+                "s3:GetObject",
+                "s3:GetObjectVersion",
                 "cloudformation:*"
               ],
               "Resource": "*",

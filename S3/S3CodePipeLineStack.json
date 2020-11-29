@@ -145,12 +145,16 @@
             {
               "Name": "BACKURL",
               "Type": "PLAINTEXT",
-              "Value": "FargateLoadBalancerDNS"
+              "Value": {
+                "Fn::ImportValue": "FargateLoadBalancerDNS"
+              }
             },
             {
               "Name": "BUCKET",
               "Type": "PLAINTEXT",
-              "Value": "tests31314"
+              "Value": {
+                "Fn::ImportValue": "WebBucket"
+              }
             }
           ]
         },
@@ -181,7 +185,7 @@
           "Ref": "PipeLine"
         },
         "TargetAction": "SourceAction",
-        "Name": "WebHook",
+        "Name": "WebHookS3",
         "TargetPipelineVersion": {
           "Fn::GetAtt": ["PipeLine", "Version"]
         },

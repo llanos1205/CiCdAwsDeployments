@@ -20,7 +20,7 @@
           "Ref": "S3Name"
         },
         "WebsiteConfiguration": {
-          "ErrorDocument": "error.html",
+          "ErrorDocument": "index.html",
           "IndexDocument": "index.html"
         }
       }
@@ -55,6 +55,17 @@
       },
       "Export": {
         "Name": "S3WebsiteURL"
+      },
+      "Description": "URL for website hosted on S3"
+    },
+    "WebBucket": {
+      "Value": 
+        
+        { "Ref": "WebBucket" }
+        
+    ,
+      "Export": {
+        "Name": "WebBucket"
       },
       "Description": "URL for website hosted on S3"
     }
