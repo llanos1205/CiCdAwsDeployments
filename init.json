@@ -1,0 +1,50 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        
+        "VPCStack": {
+         "Type": "AWS::CloudFormation::Stack",
+         "Properties": {
+            "NotificationARNs": [ "" ],
+            "Parameters": {  },
+            "TemplateURL": "",
+            "TimeoutInMinutes": ""
+         }
+        },
+        "RoleStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+               "NotificationARNs": [ "" ],
+               "Parameters": {  },
+               "TemplateURL": "",
+               "TimeoutInMinutes": ""
+            }
+           },
+           "SecurityStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+               "NotificationARNs": [ "" ],
+               "Parameters": {  },
+               "TemplateURL": "",
+               "TimeoutInMinutes": ""
+            }
+           }
+        
+    },
+    "Outputs": {
+
+    }
+}

@@ -131,14 +131,15 @@
                   "pgpass=$(aws secretsmanager get-secret-value --secret-id RDSPass | jq -r '.SecretString')",
                   {
                     "Fn::Sub": [
-                      "psql postgres://$pguser:$pgpass@${RDSHOST}:5432 -c 'CREATE DATABASE \"Client_Template\"'",
+                      "psql postgres://$pguser:$pgpass@${RDSHOST}:5432 -c 'CREATE DATABASE \"Client_Template\"; CREATE DATABASE \"Client_Template\"; '",
                       {
                         "RDSHOST": {
                           "Fn::ImportValue": "RDSendpoint"
                         }
                       }
                     ]
-                  }
+                  },
+                  "sudo yum -y install git"
                 ]
               ]
             }

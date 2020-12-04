@@ -1,0 +1,39 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    
+    "RootUser": {
+       "Type": "AWS::IAM::User",
+       "Properties": {
+      
+          "Groups": [ "" ],
+          "LoginProfile": { "Password" : "" },
+          "Policies": [  ]
+       }
+    },
+    
+    "DevGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "GroupName": "DevGroup",
+        
+        "Policies": [""]
+      }
+    },
+
+    "OpsGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+        "GroupName": "OpsGroup",
+      
+        "Policies": [""]
+      }
+    }
+  },
+  "Outputs": {}
+}

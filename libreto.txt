@@ -1,0 +1,15 @@
+partes:
+- seguridad
+----conexiones directas denegadas
+----conexiones mediante cajas de saltos permitidas
+----archivos encriptados
+- alta disponiblidad
+----cajasde saltos
+----servidores web
+------cambios
+------escalado
+- tolerancia a fallos
+----caidas cajas de saltos
+----caidas de servidores
+----caidas de bases de datos
+----retrocesos de versiones (roolbacks)
